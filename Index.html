@@ -98,7 +98,6 @@ body {
 
 .upd-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--font-body);
   padding: 3px 10px; border-radius: 20px; border: 1px solid; white-space: nowrap; }
-.upd-badge.cached { background: var(--surface-2); border-color: var(--border); color: var(--text-secondary); }
 .upd-badge.live   { background: var(--green-light); border-color: var(--green-border); color: var(--green); }
 .upd-badge .dot   { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .upd-badge.live .dot { animation: updPulse 2s infinite; }
@@ -357,7 +356,7 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
     </div>
   </div>
   <div class="app-header-btns">
-    <div class="upd-badge cached" id="updBadge" style="display:none">
+    <div class="upd-badge live" id="updBadge" style="display:none">
       <span class="dot"></span><span id="updBadgeText">—</span>
     </div>
     <button class="hbtn" id="refreshBtn" onclick="doRefresh()"><span class="ico">↺</span> تحديث</button>
@@ -432,11 +431,11 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
 
           <h4>كيف تعمل — Workflow</h4>
           <ol>
-            <li>الأداة تجيب كل الـ variants اللي عندها ستوك متاح &gt; 0 (فلتر <code>inventory_quantity:&gt;0</code> على مستوى شوبيفاي — مش full scan).</li>
+            <li>الأداة تجيب كل الـ variants اللي عندها ستوك متاح &gt; 0 (فلتر <code>inventory_quantity:&gt;0</code> على مستوى شوبيفاي — مش full scan) — لايف من شوبيفاي في كل مرة، من غير أي كاش.</li>
             <li>بتتقسم لقسمين: "التكلفة فاضية" و"السعر أقل من التكلفة".</li>
             <li>اكتب التكلفة الجديدة في خانة الـ Cost جنب كل صف — الصفوف المعدَّلة بتتلوّن.</li>
             <li>اضغط "تحديث Bulk" فوق كل جدول — يتم إرسال كل الصفوف المعدَّلة في نفس القسم لشوبيفاي دفعة واحدة.</li>
-            <li>بعد التحديث، الجدول بيتحدث تلقائياً — أي صف اتصلحت تكلفته بيختفي من القسم.</li>
+            <li>بعد التحديث، الجدول بيتحدث تلقائياً (فحص لايف جديد) — أي صف اتصلحت تكلفته بيختفي من القسم.</li>
           </ol>
 
           <h4>الـ Endpoints الرئيسية</h4>
@@ -444,7 +443,6 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
             <tr><th>action</th><th>الوصف</th></tr>
             <tr><td><code>get_variants</code></td><td>يجيب/يكاش قائمة الـ variants مقسّمة لقسمين (كل الستوك &gt; 0)</td></tr>
             <tr><td><code>bulk_update_cost</code></td><td>يحدّث تكلفة مجموعة variants على شوبيفاي (حد أقصى 100 في الطلب)</td></tr>
-            <tr><td><code>clear_cache</code></td><td>مسح الكاش يدوياً (نادراً ما يُستخدم)</td></tr>
             <tr><td><code>get_logs / get_logs_count / get_logs_export</code></td><td>سجل عمليات تحديث التكلفة (تاب سجل العمليات)</td></tr>
           </table>
         </div>
@@ -456,8 +454,7 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
           <h4>FEATURE MAP</h4>
           <ul>
             <li><code>§AUTH</code> — Universal D1 Auth (check_employee / register_pin / verify_employee / log_logout)</li>
-            <li><code>§CACHE</code> (Worker) — كاش KV لمدة 15 دقيقة لنتيجة فحص كل الـ Variants (بيانات "مفتوحة" دايماً — تتغير أي وقت)</li>
-            <li><code>§TOOL-JS</code> — جلب وتصنيف الـ variants، تعديل التكلفة، تحديث Bulk، هايبرلينك SKU</li>
+            <li><code>§TOOL-JS</code> — جلب وتصنيف الـ variants (لايف من شوبيفاي، من غير كاش)، تعديل التكلفة، تحديث Bulk، هايبرلينك SKU</li>
             <li><code>§LOG-ENDPOINTS</code> — get_logs / get_logs_count / get_logs_export — type دايماً <code>cost_update</code></li>
           </ul>
 
@@ -474,7 +471,7 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
             <li>Available stock qty بيتحسب من اللوكيشن الأساسي (<code>LOCATION_ID</code>) فقط — مش مجموع كل اللوكيشنز.</li>
             <li>الـ Cost بيتحدث على شوبيفاي عن طريق <code>inventoryItemUpdate</code> مش <code>productVariantsBulkUpdate</code> — عشان يسمح بتحديث variants من منتجات مختلفة في نفس الطلب.</li>
             <li>حد أقصى 100 تحديث في الطلب الواحد (حماية من حدود الـ subrequests بتاعة Cloudflare Workers) — لو أكتر، الأداة بتقسّمها تلقائياً على دفعات.</li>
-            <li>بعد أي تحديث Bulk ناجح، الكاش بيتمسح فوراً عشان الجدول يرجع يجيب بيانات جديدة من شوبيفاي.</li>
+            <li>مفيش أي كاش في الأداة دي — كل ضغطة "تحديث" أو تحميل أول مرة أو بعد Bulk update بتعمل فحص لايف كامل من شوبيفاي. ده معناه كل تحميل ممكن ياخد وقت أطول شوية حسب حجم الكاتالوج، لكن البيانات دايماً حديثة 100%.</li>
           </ul>
         </div>
       </details>
@@ -684,7 +681,7 @@ function closeChangelog() { document.getElementById('changelogOverlay').classLis
 function openAbout()  { document.getElementById('aboutOverlay').classList.add('open'); }
 function closeAbout() { document.getElementById('aboutOverlay').classList.remove('open'); }
 
-function updateBadge(source, isoString) {
+function updateBadge(isoString) {
   const el = document.getElementById('updBadge');
   const txt = document.getElementById('updBadgeText');
   if (!el) return;
@@ -695,8 +692,8 @@ function updateBadge(source, isoString) {
   let   h    = d.getUTCHours();
   const ampm = h >= 12 ? 'مساءً' : 'صباحاً';
   h = h % 12 || 12;
-  txt.textContent = `آخر تحديث: 📅 ${pad(d.getUTCDate())}/${pad(d.getUTCMonth()+1)}/${d.getUTCFullYear()} 🕐 ${pad(h)}:${pad(d.getUTCMinutes())} ${ampm}`;
-  el.className = `upd-badge ${source === 'shopify' ? 'live' : 'cached'}`;
+  txt.textContent = `آخر فحص لايف: 📅 ${pad(d.getUTCDate())}/${pad(d.getUTCMonth()+1)}/${d.getUTCFullYear()} 🕐 ${pad(h)}:${pad(d.getUTCMinutes())} ${ampm}`;
+  el.className = 'upd-badge live'; // دايماً لايف — مفيش كاش في الأداة دي
 }
 
 function setRefreshing(active) {
@@ -707,7 +704,7 @@ function setRefreshing(active) {
 }
 async function doRefresh() {
   setRefreshing(true);
-  try { await loadVariants(true); } finally { setRefreshing(false); }
+  try { await loadVariants(); } finally { setRefreshing(false); }
 }
 
 function showToast(msg, type = 'neutral', duration = 3500) {
@@ -1020,7 +1017,7 @@ async function finishLogin(username, displayName) {
   document.getElementById('activeUserBtn').textContent = `👤 ${displayName}`;
   showToast(`أهلاً ${displayName} 👋`, 'success');
   playBeep('success');
-  await loadVariants(false);
+  await loadVariants();
 }
 
 // ── CUSTOMIZE: logout reset ──────────────────────────────────────
@@ -1075,14 +1072,15 @@ function variantUrl(productId, variantId) {
 }
 
 // ─── §TOOL-JS::loadVariants ───
-async function loadVariants(forceRefresh) {
+// No caching — every call scans Shopify live (see Worker §PRODUCTS::get_variants).
+async function loadVariants() {
   const bodies = ['bodyEmptyCost', 'bodyPriceLtCost'];
   bodies.forEach(id => {
     document.getElementById(id).innerHTML =
-      '<tr><td colspan="5"><div class="pcc-empty"><div class="loading-spinner"></div><p style="margin-top:8px;">جاري تحميل بيانات المنتجات من شوبيفاي...</p></div></td></tr>';
+      '<tr><td colspan="5"><div class="pcc-empty"><div class="loading-spinner"></div><p style="margin-top:8px;">جاري فحص كل المنتجات لايف من شوبيفاي...</p></div></td></tr>';
   });
   try {
-    const data = await apiGet('get_variants', { forceRefresh: forceRefresh ? 'true' : 'false' });
+    const data = await apiGet('get_variants');
     if (!data.ok) throw new Error(data.error || 'خطأ في جلب البيانات');
     pccData = { emptyCost: data.emptyCost || [], priceLtCost: data.priceLtCost || [], scanned: data.scanned || 0 };
     editedCost.emptyCost.clear();
@@ -1096,7 +1094,7 @@ async function loadVariants(forceRefresh) {
 
     renderBucket('emptyCost');
     renderBucket('priceLtCost');
-    updateBadge(data.source, data.lastUpdated);
+    updateBadge(data.lastUpdated);
   } catch (err) {
     bodies.forEach(id => {
       document.getElementById(id).innerHTML = `<tr><td colspan="5"><div class="pcc-empty">⚠️ ${err.message}</div></td></tr>`;
@@ -1216,7 +1214,7 @@ async function bulkUpdate(bucket) {
     if (totalUpdated > 0) showToast(`تم تحديث ${totalUpdated} تكلفة ✓`, 'success');
     if (totalFailed  > 0) showToast(`فشل تحديث ${totalFailed} — ${failedMsgs.slice(0,3).join(' | ')}`, 'error', 6000);
 
-    await loadVariants(true); // refresh from Shopify — cache was invalidated server-side
+    await loadVariants(); // إعادة فحص لايف — يعكس التكلفة الجديدة فوراً
   } catch (err) {
     showToast(err.message || 'خطأ أثناء التحديث', 'error');
   } finally {
