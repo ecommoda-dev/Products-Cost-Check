@@ -394,7 +394,7 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
     <button class="hbtn" id="refreshBtn" onclick="doRefresh()"><span class="ico">↺</span> تحديث</button>
     <button class="hbtn active-user" id="activeUserBtn" onclick="doLogout()">👤 —</button>
     <button class="hbtn" id="aboutBtn" onclick="openAbout()">ℹ️ عن الأداة</button>
-    <button class="hbtn ver-btn" onclick="openChangelog()">v1.2.0 📋</button>
+    <button class="hbtn ver-btn" onclick="openChangelog()">v1.2.1 📋</button>
     <button class="hbtn" id="settingsBtn" onclick="openSettings()">⚙️ الإعدادات</button>
   </div>
 </div>
@@ -433,7 +433,16 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
     <div class="eco-modal-body">
       <div class="cl-version-block">
         <div class="cl-version-row">
-          <span class="cl-ver-badge">v1.2.0</span>
+          <span class="cl-ver-badge">v1.2.1</span>
+          <span class="cl-ver-date">17-08-2026</span>
+        </div>
+        <ul class="cl-items">
+          <li class="cl-item"><span class="cl-tag fix">إصلاح</span><span>تحديث الـ Bulk كان بيفشل بشكل ثابت برسالة شوبيفاي "InventoryItemUpdateInput isn't a defined input type". السبب: نوع الـ input في ميوتيشن <code>inventoryItemUpdate</code> كان متكتوب غلط — <code>InventoryItemUpdateInput</code> بدل الاسم الصحيح <code>InventoryItemInput</code> حسب توثيق شوبيفاي. اتصلحت التسمية في الـ Worker.</span></li>
+        </ul>
+      </div>
+      <div class="cl-version-block">
+        <div class="cl-version-row">
+          <span class="cl-ver-badge old">v1.2.0</span>
           <span class="cl-ver-date">17-08-2026</span>
         </div>
         <ul class="cl-items">
