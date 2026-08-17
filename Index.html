@@ -270,31 +270,62 @@ body {
 .pcc-badge.red   { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
 .pcc-section-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .pcc-search { border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 6px 10px;
-  font-family: inherit; font-size: 12px; outline: none; height: 32px; width: 220px; }
+  font-family: inherit; font-size: 12px; outline: none; height: 32px; width: 220px; transition: border-color .15s, background .15s; }
 .pcc-search:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,.08); }
+.pcc-search.has-value { border-color: var(--accent); background: var(--accent-light); }
 .pcc-bulk-btn { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius-sm);
   border: 1px solid var(--green-border); background: var(--green-light); color: var(--green);
   font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .15s; height: 32px; white-space: nowrap; }
 .pcc-bulk-btn:hover:not(:disabled) { background: var(--green); color: #fff; }
 .pcc-bulk-btn:disabled { opacity: .45; cursor: not-allowed; }
 
-.pcc-table-wrap { overflow-x: auto; }
+/* ── Filters row (sort + range filters) — sits above the scrollable table,
+   always visible together with the section header / Bulk button ──────── */
+.pcc-filters-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;
+  padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.pcc-fg { display: flex; flex-direction: column; gap: 3px; }
+.pcc-flabel { font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+.pcc-fsel, .pcc-finput-num { border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 6px 10px;
+  font-family: inherit; font-size: 12px; color: var(--text-primary); background: var(--surface); outline: none;
+  height: 32px; box-sizing: border-box; transition: border-color .15s, background .15s; }
+.pcc-fsel { width: 170px; }
+.pcc-finput-num { width: 90px; font-family: var(--font-mono); direction: ltr; }
+.pcc-fsel:focus, .pcc-finput-num:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,.08); }
+.pcc-fsel.has-value, .pcc-finput-num.has-value { border-color: var(--accent); background: var(--accent-light); }
+.pcc-range-sep { font-size: 11px; color: var(--text-muted); padding-bottom: 7px; }
+.pcc-clear-btn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border: 1px solid var(--red-border);
+  border-radius: var(--radius-sm); font-family: inherit; font-size: 12px; font-weight: 600; color: var(--red);
+  background: var(--red-light); cursor: pointer; transition: all .15s; white-space: nowrap; height: 32px; }
+.pcc-clear-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+/* ── Table — bounded height + sticky header, so the header row (and the
+   section header above it, incl. the Bulk button) always stays visible
+   while scrolling through rows ─────────────────────────────────────── */
+.pcc-table-wrap { overflow-x: auto; overflow-y: auto; max-height: 62vh; }
 table.pcc-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-table.pcc-table th { text-align: right; padding: 8px 10px; background: var(--surface-2); border-bottom: 1px solid var(--border);
-  font-size: 11px; font-weight: 700; color: var(--text-secondary); white-space: nowrap; position: sticky; top: 0; }
-table.pcc-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+table.pcc-table th { text-align: center; padding: 8px 10px; background: var(--surface-2); border-bottom: 1px solid var(--border);
+  font-size: 11px; font-weight: 700; color: var(--text-secondary); white-space: nowrap; position: sticky; top: 0; z-index: 2; }
+table.pcc-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; text-align: center; }
+table.pcc-table th, table.pcc-table td { border-inline-start: 1px solid var(--border); }
+table.pcc-table th:first-child, table.pcc-table td:first-child { border-inline-start: none; }
 table.pcc-table tr:hover td { background: var(--surface-2); }
 table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
 .pcc-sku-link { font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); text-decoration: none;
   border-bottom: 1px dashed var(--accent); }
 .pcc-sku-link:hover { color: var(--accent-dark); border-color: var(--accent-dark); }
-.pcc-product-title { max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
-.pcc-num { font-family: var(--font-mono); direction: ltr; text-align: left; display: block; }
+.pcc-status-badge { display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700;
+  padding: 2px 9px; border-radius: 20px; white-space: nowrap; }
+.pcc-status-badge.active   { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+.pcc-status-badge.draft    { background: var(--amber-light); color: var(--amber); border: 1px solid #fde68a; }
+.pcc-status-badge.archived { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
+.pcc-status-badge.unknown  { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border-strong); }
+.pcc-product-title { max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; margin: 0 auto; }
+.pcc-num { font-family: var(--font-mono); direction: ltr; display: block; }
 .pcc-cost-input { width: 100px; border: 1.5px solid var(--border-strong); border-radius: 6px; padding: 5px 8px;
-  font-family: var(--font-mono); font-size: 12px; direction: ltr; text-align: left; outline: none; }
+  font-family: var(--font-mono); font-size: 12px; direction: ltr; text-align: left; outline: none; margin: 0 auto; }
 .pcc-cost-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,.08); }
 .pcc-cost-input.edited { border-color: var(--green); background: var(--green-light); }
-.pcc-old-cost { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; font-family: var(--font-mono); direction: ltr; text-align: left; display: block; }
+.pcc-old-cost { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; font-family: var(--font-mono); direction: ltr; display: block; }
 .pcc-empty { padding: 34px; text-align: center; color: var(--text-muted); font-size: 13px; }
 .loading-spinner { width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent);
   border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
@@ -316,6 +347,7 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
 .log-fsel, .log-finput { border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 6px 10px; font-family: inherit; font-size: 12px; color: var(--text-primary); background: var(--surface); outline: none; height: 34px; box-sizing: border-box; }
 .log-fsel:focus, .log-finput:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,.08); }
 .log-fsel.w-emp { width: 160px; } .log-finput.w-search { width: 240px; }
+.log-finput.has-value { border-color: var(--accent); background: var(--accent-light); }
 .log-clear-btn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border: 1px solid var(--red-border); border-radius: var(--radius-sm); font-family: inherit; font-size: 12px; font-weight: 600; color: var(--red); background: var(--red-light); cursor: pointer; transition: all .15s; white-space: nowrap; height: 34px; }
 .log-clear-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
 .log-stats-bar { display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
@@ -362,7 +394,7 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
     <button class="hbtn" id="refreshBtn" onclick="doRefresh()"><span class="ico">↺</span> تحديث</button>
     <button class="hbtn active-user" id="activeUserBtn" onclick="doLogout()">👤 —</button>
     <button class="hbtn" id="aboutBtn" onclick="openAbout()">ℹ️ عن الأداة</button>
-    <button class="hbtn ver-btn" onclick="openChangelog()">v1.0.0 📋</button>
+    <button class="hbtn ver-btn" onclick="openChangelog()">v1.2.0 📋</button>
     <button class="hbtn" id="settingsBtn" onclick="openSettings()">⚙️ الإعدادات</button>
   </div>
 </div>
@@ -401,7 +433,26 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
     <div class="eco-modal-body">
       <div class="cl-version-block">
         <div class="cl-version-row">
-          <span class="cl-ver-badge">v1.0.0</span>
+          <span class="cl-ver-badge">v1.2.0</span>
+          <span class="cl-ver-date">17-08-2026</span>
+        </div>
+        <ul class="cl-items">
+          <li class="cl-item"><span class="cl-tag new">جديد</span><span>إضافة عمود "الحالة" بعد عمود SKU في الجدولين — يعرض حالة المنتج على شوبيفاي (نشط / مسودة / مؤرشف) ببادج ملوّن (نشط = أخضر، مسودة = كهرماني، مؤرشف = أحمر). الحالة بتتجاب من نفس فحص شوبيفاي اللايف، من غير أي طلب إضافي.</span></li>
+        </ul>
+      </div>
+      <div class="cl-version-block">
+        <div class="cl-version-row">
+          <span class="cl-ver-badge old">v1.1.0</span>
+          <span class="cl-ver-date">17-08-2026</span>
+        </div>
+        <ul class="cl-items">
+          <li class="cl-item"><span class="cl-tag fix">إصلاح</span><span>تحديث الـ Bulk كان أحياناً بيفشل برسالة عامة "استجابة غير متوقعة من شوبيفاي" من غير سبب واضح. السبب: الطلبات كانت بتتبعت لشوبيفاي من غير أي إعادة محاولة عند الـ throttling، فلو حصل throttle وسط الدفعة كانت الرسالة الحقيقية بتتبلع. دلوقتي بيعاد المحاولة تلقائياً زي باقي الأداة، ولو فشل لسبب تاني بتظهر رسالة شوبيفاي الحقيقية.</span></li>
+          <li class="cl-item"><span class="cl-tag change">تغيير</span><span>تعديل جدولَي "التكلفة فاضية" و"السعر أقل من التكلفة" حسب معيار الجداول الموحّد (توسيط كل الخلايا، خطوط فاصلة رفيعة بين الأعمدة). إضافة فرز حسب عمود (السعر / التكلفة / الكمية المتاحة) وفلتر نطاق للكمية المتاحة والسعر (من - إلى) لكل جدول. رأس القسم (بحث + فلاتر + زرار تحديث Bulk) ورأس أعمدة الجدول بقوا ثابتين فوق دايماً أثناء سكرول الصفوف (الجدول بقى له ارتفاع محدود وسكرول داخلي). كذلك توحيد صيغة عرض التاريخ/الوقت حسب أحدث معيار الأداة.</span></li>
+        </ul>
+      </div>
+      <div class="cl-version-block">
+        <div class="cl-version-row">
+          <span class="cl-ver-badge old">v1.0.0</span>
           <span class="cl-ver-date">13-08-2026</span>
         </div>
         <ul class="cl-items">
@@ -433,8 +484,10 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
           <ol>
             <li>الأداة تجيب كل الـ variants اللي عندها ستوك متاح &gt; 0 (فلتر <code>inventory_quantity:&gt;0</code> على مستوى شوبيفاي — مش full scan) — لايف من شوبيفاي في كل مرة، من غير أي كاش.</li>
             <li>بتتقسم لقسمين: "التكلفة فاضية" و"السعر أقل من التكلفة".</li>
+            <li>لكل جدول: مربع بحث بالاسم/SKU، فرز حسب عمود (السعر/التكلفة/الكمية المتاحة)، وفلتر نطاق (من-إلى) للكمية المتاحة والسعر — الفلاتر والفرز بيشتغلوا على البيانات المحمّلة، من غير أي طلب إضافي لشوبيفاي.</li>
+            <li>عمود "الحالة" بعد SKU بيوضّح حالة المنتج على شوبيفاي (نشط/مسودة/مؤرشف) — مفيد عشان تعرف تفرّق منتج شغال فعلاً محتاج تصحيح تكلفة، من منتج مؤرشف أو مسودة مش لازم يستعجل.</li>
             <li>اكتب التكلفة الجديدة في خانة الـ Cost جنب كل صف — الصفوف المعدَّلة بتتلوّن.</li>
-            <li>اضغط "تحديث Bulk" فوق كل جدول — يتم إرسال كل الصفوف المعدَّلة في نفس القسم لشوبيفاي دفعة واحدة.</li>
+            <li>اضغط "تحديث Bulk" فوق كل جدول (ظاهر دايماً فوق حتى أثناء سكرول الصفوف) — يتم إرسال كل الصفوف المعدَّلة في نفس القسم لشوبيفاي دفعة واحدة.</li>
             <li>بعد التحديث، الجدول بيتحدث تلقائياً (فحص لايف جديد) — أي صف اتصلحت تكلفته بيختفي من القسم.</li>
           </ol>
 
@@ -442,7 +495,7 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
           <table>
             <tr><th>action</th><th>الوصف</th></tr>
             <tr><td><code>get_variants</code></td><td>يجيب/يكاش قائمة الـ variants مقسّمة لقسمين (كل الستوك &gt; 0)</td></tr>
-            <tr><td><code>bulk_update_cost</code></td><td>يحدّث تكلفة مجموعة variants على شوبيفاي (حد أقصى 100 في الطلب)</td></tr>
+            <tr><td><code>bulk_update_cost</code></td><td>يحدّث تكلفة مجموعة variants على شوبيفاي (حد أقصى 100 في الطلب) — بإعادة محاولة تلقائية عند الـ throttling</td></tr>
             <tr><td><code>get_logs / get_logs_count / get_logs_export</code></td><td>سجل عمليات تحديث التكلفة (تاب سجل العمليات)</td></tr>
           </table>
         </div>
@@ -455,6 +508,7 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
           <ul>
             <li><code>§AUTH</code> — Universal D1 Auth (check_employee / register_pin / verify_employee / log_logout)</li>
             <li><code>§TOOL-JS</code> — جلب وتصنيف الـ variants (لايف من شوبيفاي، من غير كاش)، تعديل التكلفة، تحديث Bulk، هايبرلينك SKU</li>
+            <li><code>§TOOL-JS::filters</code> — فرز + فلتر نطاق (كمية/سعر) + بحث، كله client-side على <code>pccData</code> بعد التحميل، وترتيب المعالجة: فلترة ثم فرز</li>
             <li><code>§LOG-ENDPOINTS</code> — get_logs / get_logs_count / get_logs_export — type دايماً <code>cost_update</code></li>
           </ul>
 
@@ -464,6 +518,7 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
             <li><code>LS_URL = 'pcc_worker_url'</code> · <code>LS_SECRET = 'pcc_worker_secret'</code></li>
             <li><code>TOOL_NAME = 'products_cost_check'</code> — قيمة tool في جدول logs</li>
             <li><code>editedCost</code> — Map بيمسك التعديلات اللي لسه ما اتبعتتش لشوبيفاي، لكل قسم على حدة</li>
+            <li><code>bucketFilters</code> — { emptyCost: {search, sort, qtyMin, qtyMax, priceMin, priceMax}, priceLtCost: {...} } — حالة الفلاتر لكل قسم</li>
           </ul>
 
           <h4>NOTES</h4>
@@ -472,6 +527,9 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
             <li>الـ Cost بيتحدث على شوبيفاي عن طريق <code>inventoryItemUpdate</code> مش <code>productVariantsBulkUpdate</code> — عشان يسمح بتحديث variants من منتجات مختلفة في نفس الطلب.</li>
             <li>حد أقصى 100 تحديث في الطلب الواحد (حماية من حدود الـ subrequests بتاعة Cloudflare Workers) — لو أكتر، الأداة بتقسّمها تلقائياً على دفعات.</li>
             <li>مفيش أي كاش في الأداة دي — كل ضغطة "تحديث" أو تحميل أول مرة أو بعد Bulk update بتعمل فحص لايف كامل من شوبيفاي. ده معناه كل تحميل ممكن ياخد وقت أطول شوية حسب حجم الكاتالوج، لكن البيانات دايماً حديثة 100%.</li>
+            <li>الجدول له ارتفاع أقصى (<code>max-height: 62vh</code>) وسكرول داخلي — رأس الأعمدة (<code>thead</code>) ثابت <code>position: sticky</code> جوّه السكرول ده، ورأس القسم (بحث + فلاتر + زرار تحديث Bulk) برّه منطقة السكرول تماماً فيفضل ظاهر مهما اتحرك سكرول الصفوف.</li>
+            <li>فلتر "التكلفة" في الفرز موجود بس لقسم "السعر أقل من التكلفة" — قسم "التكلفة فاضية" كل صفوفه تكلفتها فاضية أصلاً فمفيش معنى للفرز بيها.</li>
+            <li>حالة المنتج (<code>productStatus</code>) بتيجي من <code>product.status</code> في شوبيفاي — قيمها <code>ACTIVE</code> / <code>DRAFT</code> / <code>ARCHIVED</code>، وبتتحول لبادج عربي ملوّن عن طريق <code>statusBadge()</code>. العمود ده للعرض بس دلوقتي، مش فلتر ولا فرز.</li>
           </ul>
         </div>
       </details>
@@ -551,16 +609,47 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
     <div class="pcc-section-hdr">
       <div class="pcc-section-title">🟡 التكلفة فاضية <span class="pcc-badge amber" id="badgeEmptyCost">0</span></div>
       <div class="pcc-section-tools">
-        <input type="text" class="pcc-search" id="searchEmptyCost" placeholder="بحث بالاسم أو SKU..." oninput="renderBucket('emptyCost')" />
+        <input type="text" class="pcc-search" id="searchEmptyCost" placeholder="بحث بالاسم أو SKU..." oninput="onBucketSearchInput('emptyCost', this)" />
         <button class="pcc-bulk-btn" id="bulkBtnEmptyCost" onclick="bulkUpdate('emptyCost')" disabled>⬆ تحديث Bulk (0)</button>
       </div>
+    </div>
+    <div class="pcc-filters-row">
+      <div class="pcc-fg">
+        <span class="pcc-flabel">فرز حسب</span>
+        <select class="pcc-fsel" id="sortEmptyCost" onchange="onBucketFilterChange('emptyCost', this)">
+          <option value="">بدون فرز</option>
+          <option value="price_asc">السعر ⬆</option>
+          <option value="price_desc">السعر ⬇</option>
+          <option value="qty_asc">الكمية المتاحة ⬆</option>
+          <option value="qty_desc">الكمية المتاحة ⬇</option>
+        </select>
+      </div>
+      <div class="pcc-fg">
+        <span class="pcc-flabel">الكمية المتاحة من</span>
+        <input type="number" class="pcc-finput-num" id="qtyMinEmptyCost" min="0" onchange="onBucketFilterChange('emptyCost', this)" />
+      </div>
+      <div class="pcc-range-sep">إلى</div>
+      <div class="pcc-fg">
+        <span class="pcc-flabel">&nbsp;</span>
+        <input type="number" class="pcc-finput-num" id="qtyMaxEmptyCost" min="0" onchange="onBucketFilterChange('emptyCost', this)" />
+      </div>
+      <div class="pcc-fg">
+        <span class="pcc-flabel">السعر من</span>
+        <input type="number" class="pcc-finput-num" id="priceMinEmptyCost" min="0" step="0.01" onchange="onBucketFilterChange('emptyCost', this)" />
+      </div>
+      <div class="pcc-range-sep">إلى</div>
+      <div class="pcc-fg">
+        <span class="pcc-flabel">&nbsp;</span>
+        <input type="number" class="pcc-finput-num" id="priceMaxEmptyCost" min="0" step="0.01" onchange="onBucketFilterChange('emptyCost', this)" />
+      </div>
+      <button class="pcc-clear-btn" onclick="clearBucketFilters('emptyCost')">✕ مسح الفلاتر</button>
     </div>
     <div class="pcc-table-wrap">
       <table class="pcc-table">
         <thead><tr>
-          <th>Product Name</th><th>SKU</th><th>Available stock qty</th><th>Price</th><th>Cost</th>
+          <th>Product Name</th><th>SKU</th><th>الحالة</th><th>Available stock qty</th><th>Price</th><th>Cost</th>
         </tr></thead>
-        <tbody id="bodyEmptyCost"><tr><td colspan="5"><div class="pcc-empty">اضغط تحديث لتحميل البيانات</div></td></tr></tbody>
+        <tbody id="bodyEmptyCost"><tr><td colspan="6"><div class="pcc-empty">اضغط تحديث لتحميل البيانات</div></td></tr></tbody>
       </table>
     </div>
   </div>
@@ -570,16 +659,49 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
     <div class="pcc-section-hdr">
       <div class="pcc-section-title">🔴 السعر أقل من التكلفة <span class="pcc-badge red" id="badgePriceLtCost">0</span></div>
       <div class="pcc-section-tools">
-        <input type="text" class="pcc-search" id="searchPriceLtCost" placeholder="بحث بالاسم أو SKU..." oninput="renderBucket('priceLtCost')" />
+        <input type="text" class="pcc-search" id="searchPriceLtCost" placeholder="بحث بالاسم أو SKU..." oninput="onBucketSearchInput('priceLtCost', this)" />
         <button class="pcc-bulk-btn" id="bulkBtnPriceLtCost" onclick="bulkUpdate('priceLtCost')" disabled>⬆ تحديث Bulk (0)</button>
       </div>
+    </div>
+    <div class="pcc-filters-row">
+      <div class="pcc-fg">
+        <span class="pcc-flabel">فرز حسب</span>
+        <select class="pcc-fsel" id="sortPriceLtCost" onchange="onBucketFilterChange('priceLtCost', this)">
+          <option value="">بدون فرز</option>
+          <option value="price_asc">السعر ⬆</option>
+          <option value="price_desc">السعر ⬇</option>
+          <option value="cost_asc">التكلفة ⬆</option>
+          <option value="cost_desc">التكلفة ⬇</option>
+          <option value="qty_asc">الكمية المتاحة ⬆</option>
+          <option value="qty_desc">الكمية المتاحة ⬇</option>
+        </select>
+      </div>
+      <div class="pcc-fg">
+        <span class="pcc-flabel">الكمية المتاحة من</span>
+        <input type="number" class="pcc-finput-num" id="qtyMinPriceLtCost" min="0" onchange="onBucketFilterChange('priceLtCost', this)" />
+      </div>
+      <div class="pcc-range-sep">إلى</div>
+      <div class="pcc-fg">
+        <span class="pcc-flabel">&nbsp;</span>
+        <input type="number" class="pcc-finput-num" id="qtyMaxPriceLtCost" min="0" onchange="onBucketFilterChange('priceLtCost', this)" />
+      </div>
+      <div class="pcc-fg">
+        <span class="pcc-flabel">السعر من</span>
+        <input type="number" class="pcc-finput-num" id="priceMinPriceLtCost" min="0" step="0.01" onchange="onBucketFilterChange('priceLtCost', this)" />
+      </div>
+      <div class="pcc-range-sep">إلى</div>
+      <div class="pcc-fg">
+        <span class="pcc-flabel">&nbsp;</span>
+        <input type="number" class="pcc-finput-num" id="priceMaxPriceLtCost" min="0" step="0.01" onchange="onBucketFilterChange('priceLtCost', this)" />
+      </div>
+      <button class="pcc-clear-btn" onclick="clearBucketFilters('priceLtCost')">✕ مسح الفلاتر</button>
     </div>
     <div class="pcc-table-wrap">
       <table class="pcc-table">
         <thead><tr>
-          <th>Product Name</th><th>SKU</th><th>Available stock qty</th><th>Price</th><th>Cost</th>
+          <th>Product Name</th><th>SKU</th><th>الحالة</th><th>Available stock qty</th><th>Price</th><th>Cost</th>
         </tr></thead>
-        <tbody id="bodyPriceLtCost"><tr><td colspan="5"><div class="pcc-empty">اضغط تحديث لتحميل البيانات</div></td></tr></tbody>
+        <tbody id="bodyPriceLtCost"><tr><td colspan="6"><div class="pcc-empty">اضغط تحديث لتحميل البيانات</div></td></tr></tbody>
       </table>
     </div>
   </div>
@@ -687,12 +809,7 @@ function updateBadge(isoString) {
   if (!el) return;
   if (!isoString) { el.style.display = 'none'; return; }
   el.style.display = 'flex';
-  const d    = new Date(new Date(isoString).getTime() + 3 * 60 * 60 * 1000);
-  const pad  = n => String(n).padStart(2, '0');
-  let   h    = d.getUTCHours();
-  const ampm = h >= 12 ? 'مساءً' : 'صباحاً';
-  h = h % 12 || 12;
-  txt.textContent = `آخر فحص لايف: 📅 ${pad(d.getUTCDate())}/${pad(d.getUTCMonth()+1)}/${d.getUTCFullYear()} 🕐 ${pad(h)}:${pad(d.getUTCMinutes())} ${ampm}`;
+  txt.textContent = `آخر فحص لايف: ${formatDateTime(isoString)}`;
   el.className = 'upd-badge live'; // دايماً لايف — مفيش كاش في الأداة دي
 }
 
@@ -715,18 +832,36 @@ function showToast(msg, type = 'neutral', duration = 3500) {
   setTimeout(() => t.remove(), duration);
 }
 
+// ── Date/Time — صيغة موحّدة (references/datetime-format.md) ────────────
 function toCairo(iso) { return new Date(new Date(iso).getTime() + 3 * 60 * 60 * 1000); }
+
+// عرض على الشاشة: 📅 DD/MM/YYYY 🕐 HH:MM صباحاً/مساءً
 function formatDateTime(iso) {
   const d = toCairo(iso), pad = n => String(n).padStart(2, '0');
   let h = d.getUTCHours();
   const ampm = h >= 12 ? 'مساءً' : 'صباحاً';
   h = h % 12 || 12;
-  return `${pad(d.getUTCDate())}-${pad(d.getUTCMonth()+1)}-${d.getUTCFullYear()} الساعة ${pad(h)}:${pad(d.getUTCMinutes())} ${ampm}`;
+  return `📅 ${pad(d.getUTCDate())}/${pad(d.getUTCMonth()+1)}/${d.getUTCFullYear()} 🕐 ${pad(h)}:${pad(d.getUTCMinutes())} ${ampm}`;
 }
+// عرض على الشاشة (تاريخ بدون وقت)
 function formatDate(iso) {
+  const d = toCairo(iso), pad = n => String(n).padStart(2, '0');
+  return `📅 ${pad(d.getUTCDate())}/${pad(d.getUTCMonth()+1)}/${d.getUTCFullYear()}`;
+}
+// عمود "التاريخ" في XLSX export فقط — بدون إيموجي
+function formatDateForExport(iso) {
   const d = toCairo(iso), pad = n => String(n).padStart(2, '0');
   return `${pad(d.getUTCDate())}-${pad(d.getUTCMonth()+1)}-${d.getUTCFullYear()}`;
 }
+// عمود "الوقت" في XLSX export فقط — بدون إيموجي
+function formatTimeForExport(iso) {
+  const d = toCairo(iso), pad = n => String(n).padStart(2, '0');
+  let h = d.getUTCHours();
+  const ampm = h >= 12 ? 'مساءً' : 'صباحاً';
+  h = h % 12 || 12;
+  return `${pad(h)}:${pad(d.getUTCMinutes())} ${ampm}`;
+}
+
 function fmtMoney(n) {
   if (n === null || n === undefined || isNaN(n)) return '—';
   return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -754,6 +889,11 @@ async function apiGet(action, params = {}) {
   const data = await resp.json();
   if (!resp.ok) throw new Error(data.error || `HTTP ${resp.status}`);
   return data;
+}
+
+// نداء واحد لتفعيل/إلغاء تفعيل حالة .has-value على أي مربع بحث/فلتر نصي أو رقمي
+function toggleSearchActiveState(el) {
+  el.classList.toggle('has-value', el.value.trim().length > 0);
 }
 
 // ── Main Tabs ─────────────────────────────────────────────────
@@ -1065,6 +1205,90 @@ let pccData = { emptyCost: [], priceLtCost: [], scanned: 0 };
 // editedCost: { emptyCost: Map(variantId -> newCostString), priceLtCost: Map(...) }
 const editedCost = { emptyCost: new Map(), priceLtCost: new Map() };
 
+// ─── §TOOL-JS::filters ───
+// bucketFilters: per-bucket state for search + sort + range filters — all client-side,
+// applied on top of the already-loaded pccData (no extra Shopify calls).
+const bucketFilters = {
+  emptyCost:   { search: '', sort: '', qtyMin: null, qtyMax: null, priceMin: null, priceMax: null },
+  priceLtCost: { search: '', sort: '', qtyMin: null, qtyMax: null, priceMin: null, priceMax: null },
+};
+
+function onBucketSearchInput(bucket, el) {
+  toggleSearchActiveState(el);
+  bucketFilters[bucket].search = el.value;
+  renderBucket(bucket);
+}
+
+function onBucketFilterChange(bucket, el) {
+  toggleSearchActiveState(el);
+  const suffix = bucket === 'emptyCost' ? 'EmptyCost' : 'PriceLtCost';
+  const f = bucketFilters[bucket];
+  f.sort     = document.getElementById(`sort${suffix}`).value;
+  f.qtyMin   = parseNumOrNull(document.getElementById(`qtyMin${suffix}`).value);
+  f.qtyMax   = parseNumOrNull(document.getElementById(`qtyMax${suffix}`).value);
+  f.priceMin = parseNumOrNull(document.getElementById(`priceMin${suffix}`).value);
+  f.priceMax = parseNumOrNull(document.getElementById(`priceMax${suffix}`).value);
+  renderBucket(bucket);
+}
+
+function parseNumOrNull(val) {
+  const v = (val || '').toString().trim();
+  if (v === '') return null;
+  const n = parseFloat(v);
+  return isNaN(n) ? null : n;
+}
+
+function clearBucketFilters(bucket) {
+  const suffix = bucket === 'emptyCost' ? 'EmptyCost' : 'PriceLtCost';
+  ['sort', 'qtyMin', 'qtyMax', 'priceMin', 'priceMax'].forEach(key => {
+    const el = document.getElementById(`${key}${suffix}`);
+    el.value = '';
+    toggleSearchActiveState(el);
+  });
+  const searchEl = document.getElementById(`search${suffix}`);
+  searchEl.value = '';
+  toggleSearchActiveState(searchEl);
+  bucketFilters[bucket] = { search: '', sort: '', qtyMin: null, qtyMax: null, priceMin: null, priceMax: null };
+  renderBucket(bucket);
+}
+
+function applyBucketFilters(bucket, rows) {
+  const f = bucketFilters[bucket];
+  let out = rows;
+
+  const search = (f.search || '').trim().toLowerCase();
+  if (search) {
+    out = out.filter(r => (r.productTitle || '').toLowerCase().includes(search) || (r.sku || '').toLowerCase().includes(search));
+  }
+  if (f.qtyMin !== null)   out = out.filter(r => (r.available ?? 0) >= f.qtyMin);
+  if (f.qtyMax !== null)   out = out.filter(r => (r.available ?? 0) <= f.qtyMax);
+  if (f.priceMin !== null) out = out.filter(r => (r.price ?? 0) >= f.priceMin);
+  if (f.priceMax !== null) out = out.filter(r => (r.price ?? 0) <= f.priceMax);
+
+  if (f.sort) {
+    const [field, dir] = f.sort.split('_'); // 'price_asc' → ['price','asc']
+    const key = field === 'qty' ? 'available' : field; // 'qty' → 'available'
+    out = [...out].sort((a, b) => {
+      const av = a[key] ?? 0, bv = b[key] ?? 0;
+      return dir === 'asc' ? av - bv : bv - av;
+    });
+  }
+
+  return out;
+}
+
+// ─── §TOOL-JS::statusBadge ───
+// ACTIVE · DRAFT · ARCHIVED — من Shopify Product.status
+function statusBadge(status) {
+  const map = {
+    ACTIVE:   { cls: 'active',   label: 'نشط'   },
+    DRAFT:    { cls: 'draft',    label: 'مسودة' },
+    ARCHIVED: { cls: 'archived', label: 'مؤرشف' },
+  };
+  const s = map[status] || { cls: 'unknown', label: '—' };
+  return `<span class="pcc-status-badge ${s.cls}">${s.label}</span>`;
+}
+
 // ─── §TOOL-JS::variantUrl ───
 function variantUrl(productId, variantId) {
   if (!productId || !variantId) return null;
@@ -1077,7 +1301,7 @@ async function loadVariants() {
   const bodies = ['bodyEmptyCost', 'bodyPriceLtCost'];
   bodies.forEach(id => {
     document.getElementById(id).innerHTML =
-      '<tr><td colspan="5"><div class="pcc-empty"><div class="loading-spinner"></div><p style="margin-top:8px;">جاري فحص كل المنتجات لايف من شوبيفاي...</p></div></td></tr>';
+      '<tr><td colspan="6"><div class="pcc-empty"><div class="loading-spinner"></div><p style="margin-top:8px;">جاري فحص كل المنتجات لايف من شوبيفاي...</p></div></td></tr>';
   });
   try {
     const data = await apiGet('get_variants');
@@ -1097,7 +1321,7 @@ async function loadVariants() {
     updateBadge(data.lastUpdated);
   } catch (err) {
     bodies.forEach(id => {
-      document.getElementById(id).innerHTML = `<tr><td colspan="5"><div class="pcc-empty">⚠️ ${err.message}</div></td></tr>`;
+      document.getElementById(id).innerHTML = `<tr><td colspan="6"><div class="pcc-empty">⚠️ ${err.message}</div></td></tr>`;
     });
     showToast(err.message || 'خطأ في تحميل البيانات', 'error');
   }
@@ -1107,17 +1331,15 @@ async function loadVariants() {
 function renderBucket(bucket) {
   const isEmpty   = bucket === 'emptyCost';
   const bodyId    = isEmpty ? 'bodyEmptyCost'   : 'bodyPriceLtCost';
-  const searchId  = isEmpty ? 'searchEmptyCost' : 'searchPriceLtCost';
   const rows      = pccData[bucket] || [];
-  const search    = (document.getElementById(searchId).value || '').trim().toLowerCase();
 
-  const filtered = search
-    ? rows.filter(r => (r.productTitle || '').toLowerCase().includes(search) || (r.sku || '').toLowerCase().includes(search))
-    : rows;
+  const filtered = applyBucketFilters(bucket, rows);
 
   const body = document.getElementById(bodyId);
   if (!filtered.length) {
-    body.innerHTML = `<tr><td colspan="5"><div class="pcc-empty">لا توجد نتائج${search ? ' تطابق البحث' : ' — كل المنتجات سليمة 🎉'}</div></td></tr>`;
+    const f = bucketFilters[bucket];
+    const hasActiveFilter = !!(f.search || f.qtyMin !== null || f.qtyMax !== null || f.priceMin !== null || f.priceMax !== null);
+    body.innerHTML = `<tr><td colspan="6"><div class="pcc-empty">لا توجد نتائج${hasActiveFilter ? ' تطابق الفلاتر' : ' — كل المنتجات سليمة 🎉'}</div></td></tr>`;
     updateBulkBtn(bucket);
     return;
   }
@@ -1135,6 +1357,7 @@ function renderBucket(bucket) {
       <tr id="pcc-row-${bucket}-${r.variantId}" class="${editedVal ? 'pcc-row-edited' : ''}">
         <td><span class="pcc-product-title" title="${(r.productTitle || '')}${r.variantTitle ? ' / ' + r.variantTitle : ''}">${r.productTitle || '—'}${r.variantTitle ? ' / ' + r.variantTitle : ''}</span></td>
         <td>${skuHtml}</td>
+        <td>${statusBadge(r.productStatus)}</td>
         <td><span class="pcc-num">${(r.available ?? 0).toLocaleString('en-US')}</span></td>
         <td><span class="pcc-num">${fmtMoney(r.price)}</span></td>
         <td>
@@ -1271,10 +1494,15 @@ async function loadLog() {
     document.getElementById('logTotalCount').textContent = '—';
   }
 }
-function onLogSearchInput() { clearTimeout(logDebounce); logDebounce = setTimeout(loadLog, 350); }
+function onLogSearchInput() {
+  toggleSearchActiveState(document.getElementById('logSearch'));
+  clearTimeout(logDebounce); logDebounce = setTimeout(loadLog, 350);
+}
 function clearLogFilters() {
+  const searchEl = document.getElementById('logSearch');
   document.getElementById('logFilterEmployee').value = '';
-  document.getElementById('logSearch').value = '';
+  searchEl.value = '';
+  toggleSearchActiveState(searchEl);
   loadLog();
 }
 
@@ -1323,8 +1551,8 @@ async function exportLogXLSX() {
     ];
     logAllData.forEach(e => {
       ws.addRow({
-        'التاريخ':      e.timestamp ? formatDate(e.timestamp) : null,
-        'الوقت':        e.timestamp ? formatDateTime(e.timestamp).split(' الساعة ')[1] : null,
+        'التاريخ':      e.timestamp ? formatDateForExport(e.timestamp) : null,
+        'الوقت':        e.timestamp ? formatTimeForExport(e.timestamp) : null,
         'الموظف':       e.employee ? e.employee.replace(/_/g, ' ') : null,
         'SKU':          e.sku || null,
         'المنتج':       e.product_title || null,
