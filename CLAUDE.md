@@ -38,9 +38,21 @@
 
 ```
 index.js        منطق الـ Worker (v2.5.0)
-index.html      الواجهة (صغيّرة — Pages حسّاس للحروف)
+index.html      الواجهة — الملف الوحيد للأداة (صغيّرة — Pages حسّاس للحروف)
+Index.html      صفحة تحويل بس (meta refresh لـ ./) — للـ bookmarks القديمة. مفيهاش أي منطق
 wrangler.toml   الاسم + bindings + vars
+README.md       وصف مختصر للأداة
 ```
+
+ملفات النسخ القديمة (`1.2.1.html` · `2.0.html` · `2.1.0.html` · `2.1.1.html` · `2.1.2.html`)
+**اتشالت** — كانت كلها صفحات لايف للعالم (§B3 في `ecommoda-deploy-runbook`).
+محفوظة للأبد في تاريخ git على الـ commit `82707a7` (جدّ مباشر لـ `main`) — للاسترجاع:
+
+```bash
+git show 82707a7:<اسم الملف>        # مثال: git show 82707a7:2.1.2.html > /tmp/2.1.2.html
+```
+
+وأي نسخة جديدة = **git tag** مش ملف جديد.
 
 ---
 
