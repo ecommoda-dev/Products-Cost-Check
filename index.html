@@ -374,7 +374,6 @@ table.pcc-table tr.pcc-row-edited td { background: var(--accent-light); }
   font-family: var(--font-mono); font-size: 12px; direction: ltr; text-align: left; outline: none; margin: 0 auto; }
 .pcc-cost-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,.08); }
 .pcc-cost-input.edited { border-color: var(--green); background: var(--green-light); }
-.pcc-old-cost { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; font-family: var(--font-mono); direction: ltr; display: block; }
 .pcc-empty { padding: 34px; text-align: center; color: var(--text-muted); font-size: 13px; }
 .loading-spinner { width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent);
   border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
@@ -474,14 +473,35 @@ table.log-table tr:hover td { background: var(--surface-2); }
 .sort-icon { display: inline-block; font-size: 10px; color: var(--accent); font-weight: 900; }
 .sort-icon.active { margin-inline-start: 4px; }
 
-/* ── بند 1: التكلفة القديمة — أوضح بصرياً، رقم فقط ── */
-.pcc-old-cost { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-top: 3px;
+/* ── التكلفة القديمة تحت مربع الإدخال — بلون أزرق واضح، رقم فقط ── */
+.pcc-old-cost { font-size: 13px; font-weight: 700; color: var(--accent-dark); margin-top: 3px;
   font-family: var(--font-mono); direction: ltr; display: block; }
 
-/* ── بند 2: تمييز القيمة الجديدة مقابل القديمة — Profit/Margin ── */
+/* ── تمييز القيمة الجديدة مقابل القديمة — Profit/Margin (اتجاه التغيير: زيادة تكلفة = أحمر، خفض تكلفة = أخضر) ── */
 .pcc-val-new { display: inline-block; padding: 1px 7px; border-radius: 5px; border: 1.5px solid #93c5fd; background: #eff6ff; }
-.pcc-val-old-strike { display: block; margin-top: 2px; font-size: 10.5px; font-weight: 600; color: var(--text-muted);
+.pcc-val-old-strike { display: block; margin-top: 3px; font-size: 13px; font-weight: 800; color: var(--text-secondary);
   text-decoration: line-through; font-family: var(--font-mono); direction: ltr; }
+
+/* ── Chips الفلاتر المختارة — سطر منفصل لكل فلتر (references/multi-select-filter.md §4) ── */
+.chips-wrap { display: flex; flex-direction: column; gap: 6px; }
+.ms-chips-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.ms-chips-row:empty { display: none; }
+.chips-label { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); white-space: nowrap; }
+.ms-chip { display: flex; align-items: center; gap: 5px; background: var(--accent-light); color: var(--accent-dark);
+  border: 1px solid #bfdbfe; border-radius: 20px; padding: 3px 6px 3px 10px; font-size: 11.5px; font-weight: 600; }
+.ms-chip button { border: none; background: rgba(37,99,235,.15); color: var(--accent-dark);
+  width: 16px; height: 16px; border-radius: 50%; font-size: 11px; cursor: pointer; line-height: 1; }
+.ms-chip button:hover { background: var(--accent); color: #fff; }
+
+/* ── عمود الصورة — تحميل عند الطلب (بند 5) ── */
+.pcc-thumb-placeholder { width: 40px; height: 40px; border-radius: 8px; border: 1.5px dashed var(--border-strong);
+  background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: 16px;
+  cursor: pointer; margin: 0 auto; padding: 0; transition: border-color .15s, background .15s; }
+.pcc-thumb-placeholder:hover { border-color: var(--accent); background: var(--accent-light); }
+.thumbs-toggle-btn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .15s; white-space: nowrap; height: 34px;
+  border: 1px solid var(--purple-border); color: var(--purple); background: var(--purple-light); }
+.thumbs-toggle-btn:hover { background: var(--purple); color: #fff; }
 
 /* ── سجل العمليات — بادج نوع التحديث (بدل الملاحظات) ── */
 .log-updtype-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
@@ -554,6 +574,21 @@ table.log-table tr:hover td { background: var(--surface-2); }
       <div class="cl-version-block">
         <div class="cl-version-row">
           <span class="cl-ver-badge" id="clLatestVerBadge"></span>
+          <span class="cl-ver-date">20-08-2026</span>
+        </div>
+        <ul class="cl-items">
+          <li class="cl-item"><span class="cl-tag new">جديد</span><span>فلتر "الحالة" (Status) جديد في قسم الفلاتر — بعد فلتر "نوع التكلفة" مباشرة — بيسمح بعرض المنتجات النشطة/مسودة/مؤرشفة بس لو محتاج.</span></li>
+          <li class="cl-item"><span class="cl-tag change">تغيير</span><span>مربع البحث بقى في صف منفصل تحت صف الفلاتر الأساسية (نوع التكلفة/الحالة/الكمية/السعر/Profit/Margin) بدل ما يكون أول عنصر في نفس الصف.</span></li>
+          <li class="cl-item"><span class="cl-tag change">تغيير</span><span>لون التكلفة القديمة تحت مربع الإدخال في عمود Cost بقى أزرق واضح بدل الأسود.</span></li>
+          <li class="cl-item"><span class="cl-tag change">تغيير</span><span>لون القيمة الجديدة في عمودَي Profit وMargin % بقى بيتحدد حسب <strong>اتجاه التغيير</strong> مقابل القيمة الأصلية (تكلفة أعلى من الحالية = أحمر، تكلفة أقل = أخضر) — مش حسب إشارة الرقم المطلق زي الأول (كان ممكن يفضل أخضر حتى لو التكلفة زادت طالما الـ Profit لسه موجب). أرقام القيم القديمة تحت كل خانة بقت بخط أكبر وBold.</span></li>
+          <li class="cl-item"><span class="cl-tag new">جديد</span><span>رجّعنا الـ Chips اللي كانت ناقصة من نسخة الجدول الموحّد — بتظهر تحت الفلاتر مباشرة، كل فلتر مختار بسطر منفصل (اسم الفلتر + قيمه/نطاقه كـ chip قابل للحذف)، لجدول الأداة وجدول سجل العمليات مع بعض.</span></li>
+          <li class="cl-item"><span class="cl-tag change">تغيير</span><span>عمود الصورة بقى "تحميل عند الطلب" — العمود بيعرض أيقونة فاضية (تكلفة شبكة = صفر) لحد ما تدوس عليها بنفسك، وبعدين بس بتتحمّل صورة الصف ده وتفتح Full screen. زرار جديد "🖼️ تحميل كل الصور" في صف النتائج بيدّي خيار يدوي لتحميل كل الصور المعروضة حالياً مرة واحدة لو محتاج. السبب: روابط الصور كانت أصلاً بتيجي مع نفس فحص المنتجات (من غير أي طلب Worker إضافي)، لكن المتصفح كان بيحمّل شبكياً كل الـ ~1400 صورة مرة واحدة عند عرض الجدول — وده كان السبب الرئيسي في بطء الأداة، مش عدد المنتجات نفسه ولا استعلام شوبيفاي.</span></li>
+          <li class="cl-item"><span class="cl-tag fix">إصلاح</span><span>سجل العمليات كان بيتقطع عند 100 صف بس رغم إن الأداة بتطلب 2000 (<code>get_logs</code> على الـ Worker كان فيه حد أقصى مكتوب غلط 100 بدل 2000) — اتصلح على الـ Worker.</span></li>
+        </ul>
+      </div>
+      <div class="cl-version-block">
+        <div class="cl-version-row">
+          <span class="cl-ver-badge old">v2.1.2</span>
           <span class="cl-ver-date">20-08-2026</span>
         </div>
         <ul class="cl-items">
@@ -658,14 +693,15 @@ table.log-table tr:hover td { background: var(--surface-2); }
           <ol>
             <li>الأداة تجيب كل الـ variants اللي عندها ستوك متاح &gt; 0 (فلتر <code>inventory_quantity:&gt;0</code> على مستوى شوبيفاي — مش full scan) — لايف من شوبيفاي في كل مرة، من غير أي كاش.</li>
             <li>كل صف بيتصنّف تلقائياً حسب التكلفة: 🟡 تكلفة فاضية / 🔴 السعر أقل من التكلفة / 🟢 السعر أكبر من التكلفة — والجدول بيعرض كل الصفوف مع بعض بشكل افتراضي.</li>
-            <li>عمود الصورة أول عمود — صورة مصغّرة لكل منتج، والضغط عليها يفتحها Full screen.</li>
-            <li>قسم الفلاتر والجدول بقى كارت واحد قابل للطي (معيار <code>data-table-standard.md</code>): أيقونة فلتر تتلوّن وزرار "مسح كل الفلاتر" يتفعّل بس لما يبقى فيه فلتر شغّال. مربع البحث بالاسم/SKU + فلتر "نوع التكلفة" + 4 فلاتر رقمية (الكمية المتاحة / السعر / Profit / Margin) — كل فلتر رقمي بيتبويب "☰ قائمة قيم" أو "↔ نطاق من-إلى" (الاتنين متبادلين، مش شغالين مع بعض).</li>
+            <li>عمود الصورة أول عمود — "تحميل عند الطلب": أيقونة فاضية افتراضيًا (تكلفة شبكة = صفر)، وتحميل الصورة الفعلية بيحصل بس لما تدوس عليها (بتفتح Full screen كمان). زرار "🖼️ تحميل كل الصور" في صف النتائج بيدّي خيار يدوي لتحميل كل الصور المعروضة حالياً مرة واحدة.</li>
+            <li>قسم الفلاتر والجدول بقى كارت واحد قابل للطي (معيار <code>data-table-standard.md</code>): أيقونة فلتر تتلوّن وزرار "مسح كل الفلاتر" يتفعّل بس لما يبقى فيه فلتر شغّال. صف الفلاتر الأساسي: نوع التكلفة → الحالة (Status) → الكمية المتاحة → السعر → Profit → Margin، وتحته في صف منفصل مربع البحث بالاسم/SKU. كل فلتر رقمي (الكمية/السعر/Profit/Margin) بيتبويب "☰ قائمة قيم" أو "↔ نطاق من-إلى" (الاتنين متبادلين، مش شغالين مع بعض).</li>
+            <li>تحت صفوف الفلاتر: Chips — كل فلتر مختار بيظهر بسطر منفصل (اسم الفلتر + قيمه/نطاقه كـ chip قابل للحذف بضغطة ✕) عشان يبان بصريًا إيه اللي شغّال دلوقتي من غير ما تفتح كل قائمة لوحدها.</li>
             <li>رؤوس الأعمدة (Product Name / SKU / الكمية / Price / Cost / Profit / Margin %) قابلة للترتيب — دوسة أولى تصاعدي، تانية تنازلي، تالتة يرجع لترتيب شوبيفاي الأصلي. الترتيب مستقل تمامًا عن الفلاتر.</li>
-            <li>عمود Status بعد SKU بيوضّح حالة المنتج بنفس الاسم الإنجليزي المستخدم على شوبيفاي (Active/Draft/Archived).</li>
-            <li>عمود Cost بيعرض التكلفة المسجّلة حالياً على شوبيفاي تحت مربع الإدخال (رقم واضح بخط بولد، بدون كلمة "Cost:"). اكتب التكلفة الجديدة في المربع نفسه (رقم صحيح بدون كسور) — عمودَي Profit وMargin % بيتحدّثوا لحظياً في نفس الصف، والقيمة الجديدة بتتحط في بادج بحدود زرقاء والقيمة القديمة تظهر تحتها بخط مشطوب صغير، لحد ما تعمل "تحديث Bulk".</li>
-            <li>صف "النتائج" (قابل للطي بردو) تحت الفلاتر — عدد النتائج في chip كبير + زرار "⬆ تحديث Bulk" — بيبعت كل الصفوف المعدَّلة حالياً (بغض النظر عن أي فلتر شغّال) لشوبيفاي دفعة واحدة.</li>
+            <li>عمود Status بعد SKU بيوضّح حالة المنتج بنفس الاسم الإنجليزي المستخدم على شوبيفاي (Active/Draft/Archived) — وبقى كمان فلتر قابل للاختيار المتعدد.</li>
+            <li>عمود Cost بيعرض التكلفة المسجّلة حالياً على شوبيفاي تحت مربع الإدخال (رقم أزرق واضح بخط بولد، بدون كلمة "Cost:"). اكتب التكلفة الجديدة في المربع نفسه (رقم صحيح بدون كسور) — عمودَي Profit وMargin % بيتحدّثوا لحظياً في نفس الصف: القيمة الجديدة في بادج بحدود زرقاء، ولونها بيتحدد حسب <strong>اتجاه التغيير</strong> (تكلفة أعلى من الحالية = أحمر، تكلفة أقل = أخضر) — والقيمة القديمة تحتها بخط أكبر وBold ومشطوب، لحد ما تعمل "تحديث Bulk".</li>
+            <li>صف "النتائج" (قابل للطي بردو) تحت الفلاتر — عدد النتائج في chip كبير + زرار "🖼️ تحميل كل الصور" + زرار "⬆ تحديث Bulk" — بيبعت كل الصفوف المعدَّلة حالياً (بغض النظر عن أي فلتر شغّال) لشوبيفاي دفعة واحدة.</li>
             <li>بعد التحديث، الجدول بيتحدث تلقائياً (فحص لايف جديد) — أي صف اتصلحت تكلفته بيتغير تصنيفه فوراً، وقوائم الفلاتر بتتبني من جديد من البيانات الطازة.</li>
-            <li>تاب "سجل العمليات" بقى بنفس معيار القسم الموحّد + فلاتر لكل الأعمدة (الموظف، نوع التحديث، من/إلى تاريخ، التكلفة قبل، التكلفة بعد) + ترتيب على كل عمود — كله client-side على السجل المحمّل (حد أقصى 2000 صف من <code>get_logs</code>). عمود "نوع التحديث" (⬆ زيادة / ⬇ خفض / بدون تغيير) بيتحسب مباشرة من التكلفة قبل/بعد بدل عمود الملاحظات القديم، وSKU بقى هايبرلينك زي الجدول الرئيسي.</li>
+            <li>تاب "سجل العمليات" بقى بنفس معيار القسم الموحّد + فلاتر لكل الأعمدة (الموظف، نوع التحديث، من/إلى تاريخ، التكلفة قبل، التكلفة بعد) + Chips + ترتيب على كل عمود — كله client-side على السجل المحمّل (حد أقصى 2000 صف من <code>get_logs</code>). عمود "نوع التحديث" (⬆ زيادة / ⬇ خفض / بدون تغيير) بيتحسب مباشرة من التكلفة قبل/بعد بدل عمود الملاحظات القديم، وSKU بقى هايبرلينك مباشر للـ variant زي الجدول الرئيسي بالظبط.</li>
           </ol>
 
           <h4>الـ Endpoints الرئيسية</h4>
@@ -673,9 +709,8 @@ table.log-table tr:hover td { background: var(--surface-2); }
             <tr><th>action</th><th>الوصف</th></tr>
             <tr><td><code>get_variants</code></td><td>يجيب كل الـ variants (ستوك &gt; 0) في مصفوفة واحدة، كل صف عليه <code>costType</code></td></tr>
             <tr><td><code>bulk_update_cost</code></td><td>يحدّث تكلفة مجموعة variants على شوبيفاي (حد أقصى 100 في الطلب) — بإعادة محاولة تلقائية عند الـ throttling</td></tr>
-            <tr><td><code>get_logs / get_logs_count / get_logs_export</code></td><td>سجل عمليات تحديث التكلفة (تاب سجل العمليات)</td></tr>
+            <tr><td><code>get_logs / get_logs_count / get_logs_export</code></td><td>سجل عمليات تحديث التكلفة (تاب سجل العمليات) — حد أقصى 2000 صف لكل من get_logs وget_logs_export</td></tr>
           </table>
-          <p style="font-size:11.5px;color:var(--text-muted);">⚠️ عمود SKU في سجل العمليات بيحتاج <code>product_id</code>/<code>variant_id</code> جوّه رد <code>get_logs</code> عشان يوديك على الـ variant مباشرة زي الجدول الرئيسي بالظبط — الـ Worker الحالي مبيرجّعش الحقلين دول لسه، فالهايبرلينك بيرجع مؤقتاً لصفحة بحث بنفس الـ SKU في شوبيفاي أدمن كـ fallback. لو حابب الرابط المباشر، محتاجين تعديل بسيط على الـ Worker يضيف الحقلين دول لسجل <code>bulk_update_cost</code>.</p>
         </div>
       </details>
 
@@ -685,11 +720,13 @@ table.log-table tr:hover td { background: var(--surface-2); }
           <h4>FEATURE MAP</h4>
           <ul>
             <li><code>§AUTH</code> — Universal D1 Auth (check_employee / register_pin / verify_employee / log_logout)</li>
-            <li><code>§TOOL-JS</code> — جلب المنتجات (لايف من شوبيفاي، من غير كاش)، تعديل التكلفة مع تحديث Profit/Margin لحظي وتمييز بصري للقيمة الجديدة/القديمة، تحديث Bulk، هايبرلينك SKU</li>
-            <li><code>§TOOL-JS::filters</code> / <code>§TOOL-JS::multiSelectFilters</code> — بحث نصي + 5 فلاتر اختيار متعدد (نوع التكلفة/كمية/سعر/Profit/Margin) بتبويب قائمة/نطاق للأرقام، كله client-side على <code>pccData.products</code></li>
+            <li><code>§TOOL-JS</code> — جلب المنتجات (لايف من شوبيفاي، من غير كاش)، تعديل التكلفة مع تحديث Profit/Margin لحظي واتجاهي (أخضر/أحمر حسب زيادة/نقصان)، تحديث Bulk، هايبرلينك SKU</li>
+            <li><code>§TOOL-JS::filters</code> / <code>§TOOL-JS::multiSelectFilters</code> — بحث نصي + 6 فلاتر اختيار متعدد (نوع التكلفة/الحالة/كمية/سعر/Profit/Margin) بتبويب قائمة/نطاق للأرقام، كله client-side على <code>pccData.products</code></li>
+            <li><code>§TOOL-JS::renderChips</code> — Chips الفلاتر المختارة، سطر منفصل لكل مفتاح، عام لجدول الأداة وجدول السجل مع بعض</li>
+            <li><code>§TOOL-JS::thumbnails</code> — عمود الصورة تحميل عند الطلب (<code>thumbCellHtml</code> / <code>loadThumb</code>) + خيار يدوي لتحميل كل الصور المعروضة (<code>toggleAllThumbs</code>)</li>
             <li><code>§TOOL-JS::sort</code> — ترتيب 3 حالات مستقل عن الفلاتر، عام لجدول الأداة وجدول السجل (<code>toggleSort</code> / <code>applySort</code>)</li>
-            <li><code>§TOOL-JS::lightbox</code> — عرض صورة المنتج Full screen عند الضغط على الصورة المصغّرة</li>
-            <li><code>§LOG-JS</code> — get_logs (حد أقصى 2000 صف) — فلاتر لكل الأعمدة + ترتيب + تصدير XLSX، معروضة كجدول حقيقي بمعيار <code>data-table-standard.md</code></li>
+            <li><code>§TOOL-JS::lightbox</code> — عرض صورة المنتج Full screen عند الضغط على الصورة (أو زرار تحميل كل الصور)</li>
+            <li><code>§LOG-JS</code> — get_logs (حد أقصى 2000 صف) — فلاتر لكل الأعمدة + Chips + ترتيب + تصدير XLSX، معروضة كجدول حقيقي بمعيار <code>data-table-standard.md</code></li>
           </ul>
 
           <h4>KEY VARIABLES</h4>
@@ -700,8 +737,10 @@ table.log-table tr:hover td { background: var(--surface-2); }
             <li><code>editedCost</code> — Map واحدة (variantId → newCostString) بتمسك كل التعديلات اللي لسه ما اتبعتتش لشوبيفاي</li>
             <li><code>pccFilters</code> — { search } — البحث النصي بس لجدول الأداة</li>
             <li><code>logFilters</code> — { search, dateFrom, dateTo } — بحث + نطاق تاريخ لجدول السجل</li>
-            <li><code>msState</code> — حالة كل الفلاتر اختيار متعدد (لجدول الأداة: costType/qty/price/profit/margin، ولجدول السجل: logEmp/logUpdType/logCostBefore/logCostAfter) — كل واحد { items, selected: Set, search, mode?, rangeFrom?, rangeTo? } — راجع <code>references/multi-select-filter.md</code> و<code>data-table-standard.md</code></li>
+            <li><code>msState</code> — حالة كل الفلاتر اختيار متعدد (لجدول الأداة: costType/status/qty/price/profit/margin، ولجدول السجل: logEmp/logUpdType/logCostBefore/logCostAfter) — كل واحد { items, selected: Set, search, mode?, rangeFrom?, rangeTo? } — راجع <code>references/multi-select-filter.md</code> و<code>data-table-standard.md</code></li>
+            <li><code>filterLabels</code> — عناوين عرض كل مفتاح msState لصف الـ chips</li>
             <li><code>sortState</code> — { pcc: {key,dir}, log: {key,dir} } — حالة الترتيب لكل جدول لوحده</li>
+            <li><code>showAllThumbs</code> / <code>loadedThumbs</code> — حالة تحميل الصور (Set بالـ variantIds اللي اتحمّلت صورتها يدويًا)</li>
           </ul>
 
           <h4>NOTES</h4>
@@ -710,12 +749,14 @@ table.log-table tr:hover td { background: var(--surface-2); }
             <li>الـ Cost بيتحدث على شوبيفاي عن طريق <code>inventoryItemUpdate</code> مش <code>productVariantsBulkUpdate</code> — عشان يسمح بتحديث variants من منتجات مختلفة في نفس الطلب.</li>
             <li>حد أقصى 100 تحديث في الطلب الواحد (حماية من حدود الـ subrequests بتاعة Cloudflare Workers) — لو أكتر، الأداة بتقسّمها تلقائياً على دفعات.</li>
             <li>مفيش أي كاش في جدول الأداة — كل ضغطة "تحديث" أو تحميل أول مرة أو بعد Bulk update بتعمل فحص لايف كامل من شوبيفاي.</li>
-            <li>حالة المنتج (<code>productStatus</code>) بتيجي من <code>product.status</code> في شوبيفاي — قيمها <code>ACTIVE</code> / <code>DRAFT</code> / <code>ARCHIVED</code>، وبتتحول لبادج ملوّن بنفس الاسم الإنجليزي (Active/Draft/Archived) عن طريق <code>statusBadge()</code>. العمود ده للعرض بس، مش فلتر ولا قابل للترتيب.</li>
-            <li>Profit/Margin بيتحدّثوا في الـ DOM مباشرة (بدون إعادة رسم الصف كله) لما تكتب في خانة الـ Cost — عشان الكتابة تفضل سلسة من غير أي وميض، وبدون إعادة تصنيف الصف لقسم تاني إلا بعد Bulk update وفحص لايف جديد.</li>
-            <li>صورة المنتج (<code>imageUrl</code>) بتيجي من <code>product.featuredImage.url</code> في نفس فحص شوبيفاي اللايف — من غير أي طلب إضافي. لو المنتج من غير صورة، الخانة بتعرض أيقونة فاضية بدل الصورة.</li>
+            <li>حالة المنتج (<code>productStatus</code>) بتيجي من <code>product.status</code> في شوبيفاي — قيمها <code>ACTIVE</code> / <code>DRAFT</code> / <code>ARCHIVED</code>، وبتتحول لبادج ملوّن بنفس الاسم الإنجليزي (Active/Draft/Archived) عن طريق <code>statusBadge()</code> — وبقى فلتر اختيار متعدد كمان (<code>msState.status</code>).</li>
+            <li>Profit/Margin بيتحدّثوا في الـ DOM مباشرة (بدون إعادة رسم الصف كله) لما تكتب في خانة الـ Cost — عشان الكتابة تفضل سلسة من غير أي وميض، وبدون إعادة تصنيف الصف لقسم تاني إلا بعد Bulk update وفحص لايف جديد. اللون (أخضر/أحمر) بيتحدد من مقارنة القيمة الجديدة بالأصلية مباشرة، مش من إشارة الرقم المطلق.</li>
+            <li>صورة المنتج (<code>imageUrl</code>) بتيجي من <code>product.featuredImage.url</code> في نفس فحص شوبيفاي اللايف — من غير أي طلب Worker إضافي. البطء اللي كان حاصل مع ~1400 صف كان سببه المتصفح بيحمّل كل الصور شبكيًا مرة واحدة عند العرض — اتحل بتأجيل تحميل كل صورة لحد ما المستخدم يدوس عليها (أو يستخدم زرار "تحميل كل الصور" يدويًا).</li>
             <li>قوائم الفلاتر الرقمية (الكمية/السعر/Profit/Margin) بتتبني من القيم الأصلية القادمة من شوبيفاي (مش من <code>editedCost</code>) — عشان القائمة تفضل ثابتة أثناء ما المستخدم بيكتب تكلفة جديدة، وبتتبني من جديد بس بعد فحص لايف جديد.</li>
-            <li>عمود "نوع التحديث" في سجل العمليات بيتحسب client-side من <code>value_before</code>/<code>value_after</code> الموجودين فعلاً في كل سجل — مفيش أي تعديل على الـ Worker مطلوب لبند التصنيف ده تحديدًا (بعكس هايبرلينك SKU المباشر، اللي محتاج تعديل الـ Worker — راجع ملاحظة قسم "وصف الأداة" فوق).</li>
+            <li>عمود "نوع التحديث" في سجل العمليات بيتحسب client-side من <code>value_before</code>/<code>value_after</code> الموجودين فعلاً في كل سجل.</li>
+            <li>هايبرلينك SKU في سجل العمليات بيقرأ <code>productId</code>/<code>variantId</code> من عمود <code>extra</code> (JSON) اللي بيتسجّل بالفعل وقت <code>bulk_update_cost</code> على الـ Worker — يوديك على الـ variant مباشرة زي الجدول الرئيسي بالظبط، من غير أي طلب Shopify إضافي. لو <code>extra</code> فاضي أو مش قابل للـ parsing (سجلات قديمة قبل هذا التتبع)، بيرجع fallback لصفحة بحث بنفس الـ SKU في شوبيفاي أدمن.</li>
             <li>الترتيب (<code>toggleSort</code>/<code>applySort</code>) عام بمفتاح جدول ('pcc' أو 'log') — نفس الدالة تخدم الجدولين، والـ 3 حالات (تصاعدي/تنازلي/بلا ترتيب) بترجع لترتيب البيانات الأصلي زي ما اتحمّل من الـ Worker.</li>
+            <li>الـ Worker (v2.5.0): <code>get_logs</code> كان فيه حد أقصى مكتوب غلط 100 (بدل 2000) في مكانين — قيمة الـ query param وقيمة الـ SQL LIMIT جوّه <code>getLogs()</code> — اتصلحوا الاتنين، فسجل العمليات بقى بيرجّع فعليًا لغاية 2000 صف زي ما الأداة بتطلب.</li>
           </ul>
         </div>
       </details>
@@ -814,13 +855,6 @@ table.log-table tr:hover td { background: var(--surface-2); }
     <div class="flt-body" id="toolFltBody">
       <div class="flt-row">
         <div class="pcc-fg">
-          <span class="pcc-flabel">بحث</span>
-          <div class="pcc-search-wrap">
-            <input type="text" class="pcc-search" id="pccSearch" oninput="onPccSearchInput(this)" />
-            <span class="pcc-search-icon">🔍</span>
-          </div>
-        </div>
-        <div class="pcc-fg">
           <span class="pcc-flabel">نوع التكلفة</span>
           <div class="ms-wrap" id="msWrap-costType">
             <button class="ms-btn" id="msBtn-costType" onclick="msToggle('costType')">
@@ -834,6 +868,23 @@ table.log-table tr:hover td { background: var(--surface-2); }
                 <span id="msSelectAllLabel-costType">تحديد الكل</span>
               </div>
               <div class="ms-list" id="msList-costType"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pcc-fg">
+          <span class="pcc-flabel">الحالة</span>
+          <div class="ms-wrap" id="msWrap-status">
+            <button class="ms-btn" id="msBtn-status" onclick="msToggle('status')">
+              <span id="msBtnLabel-status">الكل</span>
+              <span class="ms-arrow">▾</span>
+            </button>
+            <div class="ms-menu" id="msMenu-status">
+              <div class="ms-ftr-top"><button class="ms-ftr-clear" onclick="msClear('status')">مسح الاختيار</button><span class="ms-ftr-count" id="msFtrCount-status"></span></div>
+              <div class="ms-selectall-row" onclick="msToggleSelectAll('status')">
+                <input type="checkbox" id="msSelectAll-status" onclick="event.stopPropagation()" onchange="msToggleSelectAll('status', this.checked)">
+                <span id="msSelectAllLabel-status">تحديد الكل</span>
+              </div>
+              <div class="ms-list" id="msList-status"></div>
             </div>
           </div>
         </div>
@@ -970,6 +1021,25 @@ table.log-table tr:hover td { background: var(--surface-2); }
           </div>
         </div>
       </div>
+
+      <div class="flt-row">
+        <div class="pcc-fg" style="flex:1; min-width:220px;">
+          <span class="pcc-flabel">بحث</span>
+          <div class="pcc-search-wrap">
+            <input type="text" class="pcc-search" id="pccSearch" oninput="onPccSearchInput(this)" />
+            <span class="pcc-search-icon">🔍</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chips-wrap">
+        <div class="ms-chips-row" id="chipsRow-costType"></div>
+        <div class="ms-chips-row" id="chipsRow-status"></div>
+        <div class="ms-chips-row" id="chipsRow-qty"></div>
+        <div class="ms-chips-row" id="chipsRow-price"></div>
+        <div class="ms-chips-row" id="chipsRow-profit"></div>
+        <div class="ms-chips-row" id="chipsRow-margin"></div>
+      </div>
     </div>
 
     <div class="section-divider"></div>
@@ -983,6 +1053,7 @@ table.log-table tr:hover td { background: var(--surface-2); }
         </div>
       </div>
       <div class="tbl-bar-left">
+        <button class="thumbs-toggle-btn" id="pccThumbsToggleBtn" onclick="event.stopPropagation(); toggleAllThumbs();">🖼️ تحميل كل الصور</button>
         <button class="pcc-bulk-btn" id="pccBulkBtn" onclick="event.stopPropagation(); bulkUpdate();" disabled>⬆ تحديث Bulk (0)</button>
       </div>
     </div>
@@ -1158,6 +1229,13 @@ table.log-table tr:hover td { background: var(--surface-2); }
           </div>
         </div>
       </div>
+
+      <div class="chips-wrap">
+        <div class="ms-chips-row" id="chipsRow-logEmp"></div>
+        <div class="ms-chips-row" id="chipsRow-logUpdType"></div>
+        <div class="ms-chips-row" id="chipsRow-logCostBefore"></div>
+        <div class="ms-chips-row" id="chipsRow-logCostAfter"></div>
+      </div>
     </div>
 
     <div class="section-divider"></div>
@@ -1206,7 +1284,7 @@ table.log-table tr:hover td { background: var(--surface-2); }
      §SHELL-JS
      ══════════════════════════════════════════════════════════════ -->
 <script>
-const TOOL_VERSION = 'v2.1.2'; // ← مصدر واحد للنسخة — هيدر + Changelog badge + نص اللوجن كلهم بيتقروا منه
+const TOOL_VERSION = 'v2.5.0'; // ← مصدر واحد للنسخة — هيدر + Changelog badge + نص اللوجن كلهم بيتقروا منه
 const LS_URL    = 'pcc_worker_url';
 const LS_SECRET = 'pcc_worker_secret';
 
@@ -1690,6 +1768,7 @@ function clearPccFilters() {
   document.querySelectorAll('#toolFltBody .ms-mode-btn').forEach(b => b.classList.toggle('active', b.id.endsWith('-list')));
   document.querySelectorAll('#toolFltBody .ms-mode-panel').forEach(p => p.classList.toggle('active', p.id.endsWith('-list')));
   updateToolFilterIconState();
+  renderChips();
   renderPcc();
 }
 
@@ -1721,6 +1800,7 @@ function toggleToolTable() {
 // mode/rangeFrom/rangeTo: للفلاتر الرقمية بس (قائمة/نطاق متبادلين — قسم 4 في data-table-standard.md).
 const msState = {
   costType:      { items: [], selected: new Set(), search: '' },
+  status:        { items: [], selected: new Set(), search: '' },
   qty:           { items: [], selected: new Set(), search: '', mode: 'list', rangeFrom: '', rangeTo: '' },
   price:         { items: [], selected: new Set(), search: '', mode: 'list', rangeFrom: '', rangeTo: '' },
   profit:        { items: [], selected: new Set(), search: '', mode: 'list', rangeFrom: '', rangeTo: '' },
@@ -1731,8 +1811,14 @@ const msState = {
   logCostAfter:  { items: [], selected: new Set(), search: '', mode: 'list', rangeFrom: '', rangeTo: '' },
 };
 // الفلاتر بتاعة جدول الأداة (تول) مقابل جدول السجل — مستخدمة في anyFilterActive لكل قسم لوحده
-const TOOL_MS_KEYS = ['costType', 'qty', 'price', 'profit', 'margin'];
+const TOOL_MS_KEYS = ['costType', 'status', 'qty', 'price', 'profit', 'margin'];
 const LOG_MS_KEYS  = ['logEmp', 'logUpdType', 'logCostBefore', 'logCostAfter'];
+// عناوين الفلاتر لصف الـ chips (references/multi-select-filter.md §4) — لكل مفاتيح msState
+const filterLabels = {
+  costType: 'نوع التكلفة', status: 'الحالة', qty: 'الكمية المتاحة', price: 'السعر', profit: 'Profit', margin: 'Margin',
+  logEmp: 'الموظف', logUpdType: 'نوع التحديث', logCostBefore: 'التكلفة قبل', logCostAfter: 'التكلفة بعد',
+};
+const MS_STATUS_LABELS = { ACTIVE: 'Active', DRAFT: 'Draft', ARCHIVED: 'Archived' };
 const MS_COST_TYPE_LABELS = { empty: '🟡 تكلفة فاضية', below: '🔴 السعر أقل من التكلفة', above: '🟢 السعر أكبر من التكلفة' };
 
 // ─── §TOOL-JS::buildMsItems ───
@@ -1744,6 +1830,9 @@ function buildMsItems() {
 
   const costTypesPresent = [...new Set(rows.map(r => r.costType))];
   msState.costType.items = costTypesPresent.map(v => ({ value: v, label: MS_COST_TYPE_LABELS[v] || v }));
+
+  const statusesPresent = [...new Set(rows.map(r => r.productStatus).filter(Boolean))];
+  msState.status.items = statusesPresent.map(v => ({ value: v, label: MS_STATUS_LABELS[v] || v }));
 
   const qtyVals = [...new Set(rows.map(r => r.available ?? 0))].sort((a, b) => a - b);
   msState.qty.items = qtyVals.map(v => ({ value: String(v), label: v.toLocaleString('en-US'), mono: true }));
@@ -1770,6 +1859,7 @@ function buildMsItems() {
 
   msRenderAll();
   updateToolFilterIconState();
+  renderChips();
 }
 function msRenderAll() { Object.keys(msState).forEach(k => msRenderList(k)); }
 
@@ -1830,8 +1920,29 @@ function msToggle(key) {
 }
 // نداء الفلترة الفعلي حسب مين صاحب الفلتر — جدول الأداة أو جدول سجل العمليات
 function onMsFilterChanged(key) {
+  renderChips();
   if (LOG_MS_KEYS.includes(key)) { updateLogFilterIconState(); renderLog(logAllData); }
   else                           { updateToolFilterIconState(); renderPcc(); }
+}
+// ─── §TOOL-JS::renderChips — Chips الفلاتر المختارة، سطر منفصل لكل مفتاح (بند 4) ───
+function renderChips() {
+  Object.keys(msState).forEach(key => {
+    const row = document.getElementById(`chipsRow-${key}`);
+    if (!row) return;
+    const st = msState[key];
+    const label = filterLabels[key] || key;
+    let chips = '';
+    if (st.mode === 'range' && (st.rangeFrom || st.rangeTo)) {
+      chips = `<span class="ms-chip">من ${st.rangeFrom || '…'} إلى ${st.rangeTo || '…'}<button onclick="msRangeClear('${key}')">✕</button></span>`;
+    } else if (st.selected.size) {
+      chips = [...st.selected].map(val => {
+        const item = st.items.find(it => it.value === val);
+        const v = item ? item.label : val;
+        return `<span class="ms-chip">${v}<button onclick="msToggleItem('${key}','${String(val).replace(/'/g, "\\'")}')">✕</button></span>`;
+      }).join('');
+    }
+    row.innerHTML = chips ? `<span class="chips-label">${label}:</span>${chips}` : '';
+  });
 }
 function msToggleItem(key, value) {
   const st = msState[key];
@@ -1920,6 +2031,9 @@ function applyPccFilters(rows) {
 
   if (msState.costType.selected.size) {
     out = out.filter(r => msState.costType.selected.has(r.costType));
+  }
+  if (msState.status.selected.size) {
+    out = out.filter(r => msState.status.selected.has(r.productStatus));
   }
 
   out = applyNumericMsFilter(out, 'qty',    r => r.available ?? 0);
@@ -2042,6 +2156,41 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.getElementById('pccLightboxOverlay').classList.contains('open')) closePccLightbox();
 });
 
+// ─── §TOOL-JS::thumbnails — تحميل عند الطلب (بند 5) ───
+// روابط الصور (imageUrl) بتيجي مع بيانات المنتجات نفسها من نفس فحص شوبيفاي اللايف
+// (مفيش أي طلب Worker إضافي لكل صورة) — لكن المتصفح كان بيحمّل شبكياً كل الصور
+// الـ ~1400 مرة واحدة عند عرض الجدول (حتى مع loading="lazy")، وده السبب الرئيسي
+// في بطء الأداة مع الكميات الكبيرة. الحل: العمود بيعرض placeholder فاضي (تكلفة
+// شبكة = صفر) لحد ما المستخدم يدوس عليه بنفسه، فتتحمّل صورة الصف ده بس. زرار
+// "تحميل كل الصور" في صف النتائج بيدي خيار يدوي لتحميل كل الصور المعروضة حالياً مرة واحدة.
+let showAllThumbs = false;
+const loadedThumbs = new Set(); // variantIds اللي المستخدم دوس يشوف صورتها بالفعل — تفضل محمّلة عبر renderPcc
+
+function thumbCellHtml(r) {
+  if (!r.imageUrl) return '<span class="pcc-thumb-empty">🖼️</span>';
+  const esc = (r.imageUrl || '').replace(/'/g, "\\'"), escAlt = (r.imageAlt || '').replace(/'/g, "\\'");
+  if (showAllThumbs || loadedThumbs.has(String(r.variantId))) {
+    return `<button class="pcc-thumb-btn" onclick="openPccLightbox('${esc}', '${escAlt}')">
+              <img src="${r.imageUrl}" alt="${r.imageAlt || ''}" loading="lazy" /></button>`;
+  }
+  return `<button class="pcc-thumb-placeholder" onclick="loadThumb('${r.variantId}')" title="اضغط لعرض الصورة">🖼️</button>`;
+}
+// تحميل صورة صف واحد فقط عند الطلب — تحديث الخلية دي بس (من غير renderPcc لكل الجدول)
+function loadThumb(variantId) {
+  loadedThumbs.add(String(variantId));
+  const r = (pccData.products || []).find(x => String(x.variantId) === String(variantId));
+  const cell = document.getElementById(`thumb-${variantId}`);
+  if (r && cell) cell.innerHTML = thumbCellHtml(r);
+  if (r && r.imageUrl) openPccLightbox(r.imageUrl, r.imageAlt || '');
+}
+// زرار "تحميل كل الصور" — يدوي بس، بيأثر على الصفوف المعروضة حالياً (بعد الفلاتر)
+function toggleAllThumbs() {
+  showAllThumbs = !showAllThumbs;
+  const btn = document.getElementById('pccThumbsToggleBtn');
+  if (btn) btn.textContent = showAllThumbs ? '🖼️ إخفاء كل الصور' : '🖼️ تحميل كل الصور';
+  renderPcc();
+}
+
 // ─── §TOOL-JS::variantUrl ───
 function variantUrl(productId, variantId) {
   if (!productId || !variantId) return null;
@@ -2051,19 +2200,24 @@ function variantUrl(productId, variantId) {
 // بند 2 (20-08-2026): لما الصف يبقى فيه تكلفة معدَّلة لسه ما اتبعتتش، القيمة الجديدة
 // بتتلوّن ببادج مميّز (حدود زرقاء) والقيمة القديمة بتظهر تحتها بخط مشطوب صغير —
 // عشان يبان بصرياً الفرق قبل ما تدوس "تحديث Bulk".
+// بند 3 (20-08-2026): لون القيمة الجديدة بيتحدد حسب اتجاه التغيير مقابل القيمة الأصلية
+// (مش حسب إشارة الرقم المطلق) — تكلفة أعلى من الحالية = القيمة الجديدة تبقى حمراء
+// (حتى لو لسه موجب)، تكلفة أقل من الحالية = خضراء. القيمة القديمة تحتها بخط أكبر وBold.
 function fmtProfitCell(profit, oldProfit, isEdited) {
   if (profit === null || profit === undefined) return '<span class="pcc-num">—</span>';
-  const cls = profit >= 0 ? 'pcc-profit-pos' : 'pcc-profit-neg';
+  const hasOld = isEdited && oldProfit !== null && oldProfit !== undefined && Math.round(oldProfit) !== Math.round(profit);
+  const cls = hasOld ? (profit > oldProfit ? 'pcc-profit-pos' : 'pcc-profit-neg') : (profit >= 0 ? 'pcc-profit-pos' : 'pcc-profit-neg');
   const newHtml = `<span class="pcc-num ${cls}${isEdited ? ' pcc-val-new' : ''}">${fmtMoney(profit)}</span>`;
-  if (!isEdited || oldProfit === null || oldProfit === undefined || Math.round(oldProfit) === Math.round(profit)) return newHtml;
+  if (!hasOld) return newHtml;
   return `${newHtml}<span class="pcc-val-old-strike">${fmtMoney(oldProfit)}</span>`;
 }
 function fmtMarginCell(margin, oldMargin, isEdited) {
   if (margin === null || margin === undefined) return '<span class="pcc-num">—</span>';
-  const cls = margin >= 0 ? 'pcc-profit-pos' : 'pcc-profit-neg';
+  const hasOld = isEdited && oldMargin !== null && oldMargin !== undefined && Math.round(oldMargin * 10) !== Math.round(margin * 10);
+  const cls = hasOld ? (margin > oldMargin ? 'pcc-profit-pos' : 'pcc-profit-neg') : (margin >= 0 ? 'pcc-profit-pos' : 'pcc-profit-neg');
   const marginStr = `${margin.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
   const newHtml = `<span class="pcc-num ${cls}${isEdited ? ' pcc-val-new' : ''}">${marginStr}</span>`;
-  if (!isEdited || oldMargin === null || oldMargin === undefined || Math.round(oldMargin * 10) === Math.round(margin * 10)) return newHtml;
+  if (!hasOld) return newHtml;
   const oldStr = `${oldMargin.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
   return `${newHtml}<span class="pcc-val-old-strike">${oldStr}</span>`;
 }
@@ -2124,14 +2278,11 @@ function renderPcc() {
     const { profit: origProfit, margin: origMargin } = computeProfitMargin(r.price, r.cost);
     const fullTitle = `${r.productTitle || ''}${r.variantTitle ? ' / ' + r.variantTitle : ''}`;
 
-    const thumbHtml = r.imageUrl
-      ? `<button class="pcc-thumb-btn" onclick="openPccLightbox('${r.imageUrl.replace(/'/g, "\\'")}', '${(r.imageAlt || '').replace(/'/g, "\\'")}')">
-           <img src="${r.imageUrl}" alt="${r.imageAlt || ''}" loading="lazy" /></button>`
-      : `<span class="pcc-thumb-empty">🖼️</span>`;
+    const thumbHtml = thumbCellHtml(r);
 
     return `
       <tr id="pcc-row-${r.variantId}" class="${isEdited ? 'pcc-row-edited' : ''}">
-        <td>${thumbHtml}</td>
+        <td id="thumb-${r.variantId}">${thumbHtml}</td>
         <td><span class="pcc-product-title">${fullTitle || '—'}</span></td>
         <td>${skuHtml}</td>
         <td>${statusBadge(r.productStatus)}</td>
@@ -2276,12 +2427,14 @@ function updateTypeBadge(before, after) {
   const cls = t.key === 'up' ? 'log-updtype-up' : t.key === 'down' ? 'log-updtype-down' : 'log-updtype-same';
   return `<span class="log-updtype-badge ${cls}">${t.label}</span>`;
 }
-// ─── §LOG-JS::logSkuLink — بند 4: SKU هايبرلينك زي الجدول الرئيسي ───
-// لو السجل فيه productId/variantId (بعد تحديث الـ Worker) بيروح على الـ variant مباشرة،
-// وإلا fallback لبحث SKU في صفحة منتجات شوبيفاي أدمن.
+// ─── §LOG-JS::logSkuLink — SKU هايبرلينك زي الجدول الرئيسي بالظبط ───
+// productId/variantId موجودين بالفعل جوّه عمود extra (JSON) اللي بيتسجّل وقت
+// bulk_update_cost على الـ Worker — من غير أي تعديل إضافي على الـ Worker مطلوب.
 function logSkuLink(e) {
   if (!e.sku) return '<span class="pcc-num">—</span>';
-  const directUrl = variantUrl(e.product_id || e.productId, e.variant_id || e.variantId);
+  let extra = {};
+  try { extra = e.extra ? JSON.parse(e.extra) : {}; } catch (_) { extra = {}; }
+  const directUrl = variantUrl(extra.productId, extra.variantId);
   const url = directUrl || `${PCC_ADMIN_BASE}?selectedView=all&query=${encodeURIComponent(e.sku)}`;
   return `<a class="log-sku-link" href="${url}" target="_blank" rel="noopener">${e.sku}</a>`;
 }
@@ -2327,6 +2480,7 @@ function buildLogMsItems() {
     [...msState[k].selected].forEach(v => { if (!valid.has(v)) msState[k].selected.delete(v); });
     msRenderList(k);
   });
+  renderChips();
 }
 
 function onLogSearchInput() {
@@ -2356,6 +2510,7 @@ function clearLogFilters() {
   document.querySelectorAll('#logFltBody .ms-mode-btn').forEach(b => b.classList.toggle('active', b.id.endsWith('-list')));
   document.querySelectorAll('#logFltBody .ms-mode-panel').forEach(p => p.classList.toggle('active', p.id.endsWith('-list')));
   updateLogFilterIconState();
+  renderChips();
   renderLog(logAllData);
 }
 
