@@ -54,7 +54,7 @@
 ```
 index.js        منطق الـ Worker (v2.5.0)
 index.html      الواجهة — الملف الوحيد للأداة (صغيّرة — Pages حسّاس للحروف)
-Index.html      صفحة تحويل بس (meta refresh لـ ./) — للـ bookmarks القديمة. مفيهاش أي منطق
+(اتشالت Index.html — 23-09-2026، قرار أحمد. الرابط الوحيد: https://ecommoda-dev.github.io/Products-Cost-Check/)
 wrangler.toml   الاسم + bindings + vars
 README.md       وصف مختصر للأداة
 ```
