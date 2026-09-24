@@ -1,7 +1,7 @@
 # Products Cost Check
 
 > أداة داخلية لـ EcomModa — مراجعة وتصحيح تكلفة المنتجات على شوبيفاي.
-> **Worker v2.5.0**
+> **Worker v2.5.1**
 
 ---
 
@@ -9,11 +9,11 @@
 
 | المهارة | الإصدار وقت آخر تعديل |
 |---|---|
-| ecommoda-worker-builder | v1.0.0 |
+| ecommoda-worker-builder | v3.8.0 |
 | ecommoda-html-builder | v1.0.0 |
-| ecommoda-constants | v1.0.0 |
+| ecommoda-constants | v3.1.0 |
 
-آخر مطابقة: 25-08-2026 · `index.js` v2.5.0 · `index.html` v2.5.0
+آخر مطابقة: 24-09-2026 · `index.js` v2.5.1 · `index.html` v2.5.0
 🔴 معلّقة: — لا شيء
 
 > `v1.0.0` = **قبل النظام**، مش شهادة مطابقة. → `ecommoda-skill-versioning`
