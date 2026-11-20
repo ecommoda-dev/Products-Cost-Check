@@ -1,6 +1,6 @@
 {
   "tool": "products_cost_check",
-  "since": null,
+  "since": "index.js v2.6.0",
   "types": {
     "login": {
       "result": null,
@@ -13,9 +13,20 @@
       "desc": "خروج موظف"
     },
     "cost_update": {
-      "result": null,
-      "stage": null,
-      "desc": "تحديث تكلفة الـ variant"
+      "result": [
+        "success",
+        "error"
+      ],
+      "stage": "write",
+      "desc": "محاولة تحديث تكلفة الـ variant اتبعتت لشوبيفاي — نجحت (success) أو اترفضت (error)"
+    },
+    "cost_update_rejected": {
+      "result": [
+        "rejected",
+        "already"
+      ],
+      "stage": "preflight",
+      "desc": "اتوقفت قبل أي نداء لشوبيفاي — بيانات ناقصة/قيمة غلط/تكرار في الدفعة (rejected) أو التكلفة مطابقة أصلاً (already)"
     }
   }
 }

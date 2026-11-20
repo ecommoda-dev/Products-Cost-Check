@@ -16,6 +16,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, extname, relative } from 'node:path';
 
 // ── المفردات المقفولة (§12) ────────────────────────────────────────────────
+const CHECK_VERSION = 'v3.2';   // علامة النسخة — الجرد (LOG-checker-blind-shorthand) بيدوّر عليها
 const RESULTS = ['success', 'rejected', 'already', 'warning', 'error'];
 const STAGES  = ['lookup', 'write', 'preflight'];
 

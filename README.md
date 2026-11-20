@@ -1,4 +1,8 @@
+<div dir="rtl" style="text-align: right;">
+
 # Products Cost Check
+
+![version](https://img.shields.io/badge/version-v1.1.0-blue)
 
 أداة داخلية لـ EcomModa لفحص وتصحيح **تكلفة المنتجات** على شوبيفاي.
 
@@ -19,10 +23,14 @@
 ## الملفات
 
 ```
-index.js        منطق الـ Worker (v2.5.0)
+index.js        منطق الـ Worker (v2.6.0)
 index.html      الواجهة
 wrangler.toml   الاسم + bindings + vars
 CLAUDE.md       قواعد الأداة الكاملة — اقراه قبل أي تعديل
 ```
 
 ⚠️ أداة كتابة — بتعدّل بيانات تكلفة حقيقية على شوبيفاي. الأسرار في Cloudflare بس، مش في الريبو.
+
+آخر تحديث: 20-11-2026 — 13:33
+
+</div>
