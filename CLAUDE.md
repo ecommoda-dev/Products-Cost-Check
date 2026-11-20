@@ -1,7 +1,11 @@
+<div dir="rtl" style="text-align: right;">
+
 # Products Cost Check
 
+![version](https://img.shields.io/badge/version-v1.1.0-blue)
+
 > أداة داخلية لـ EcomModa — مراجعة وتصحيح تكلفة المنتجات على شوبيفاي.
-> **Worker v2.5.1**
+> **Worker v2.6.0 · Frontend v2.6.0**
 
 ---
 
@@ -9,12 +13,13 @@
 
 | المهارة | الإصدار وقت آخر تعديل |
 |---|---|
-| ecommoda-worker-builder | v3.8.0 |
-| ecommoda-html-builder | v1.0.0 |
-| ecommoda-constants | v3.1.0 |
+| ecommoda-worker-builder | v4.2.0 |
+| ecommoda-html-builder | v9.1.1 |
+| ecommoda-constants | v6.0.1 |
 
-آخر مطابقة: 24-09-2026 · `index.js` v2.5.1 · `index.html` v2.5.0
+آخر مطابقة: 20-11-2026 · `index.js` v2.6.0 · `index.html` v2.6.0
 🔴 معلّقة: — لا شيء
+🟡 مؤجَّلة بقرار (مش كاسرة): ① فلاتر الجدول في رأس العمود (Standards #47 · وصفة `S47`) ② سحب عرض الأعمدة (#51) ③ قفل الهيدر عند السكرول (#33) — كلها إعادة تصميم لجدول الأداة وجدول السجل (فلاتر بقت في قسم فوق الجدول بمعيار قديم) ومخاطرتها أعلى من فايدتها في تسليم واحد؛ تتعمل في جلسة مخصّصة بعد تجربة الإصدار ده.
 
 > `v1.0.0` = **قبل النظام**، مش شهادة مطابقة. → `ecommoda-skill-versioning`
 
@@ -52,7 +57,9 @@
 ## الملفات
 
 ```
-index.js        منطق الـ Worker (v2.5.0)
+index.js        منطق الـ Worker (v2.6.0)
+check-log-values.mjs   فحص قيم اللوج (`CHECK_VERSION = 'v3.2'`) — `node check-log-values.mjs` لازم يعدّي قبل أي تسليم
+log-values.json        سجل قيم `type` للأداة — بيتحدّث في نفس الـ commit اللي بيضيف أي `writeLog`
 index.html      الواجهة — الملف الوحيد للأداة (صغيّرة — Pages حسّاس للحروف)
 (اتشالت Index.html — 23-09-2026، قرار أحمد. الرابط الوحيد: https://ecommoda-dev.github.io/Products-Cost-Check/)
 wrangler.toml   الاسم + bindings + vars
@@ -83,10 +90,13 @@ git show 82707a7:<اسم الملف>        # مثال: git show 82707a7:2.1.2.h
 | `log_logout` | GET | لوج `logout` |
 | `get_employees` | GET | قائمة الموظفين النشطين |
 | `get_variants` | GET | **مسح حي** لكل الـ variants اللي مخزونها > 0 + التصنيف |
-| `bulk_update_cost` | POST | تحديث تكلفة (حد أقصى **100**) + لوج `cost_update` لكل صف |
-| `get_logs` | GET | السجل (`limit` ≤ 2000 · `offset` · `employee` · `search`) |
-| `get_logs_count` | GET | إجمالي عدد صفوف السجل |
-| `get_logs_export` | GET | تصدير — حد ثابت 2000 صف |
+| `bulk_update_cost` | POST | تحديث تكلفة (حد أقصى **100**، والواجهة بتبعت ٢٠) — نتيجة لكل صف `status` + لوج صف واحد لكل عنصر |
+| `get_logs` | GET | السجل — صفحة (≤ **100**) · `offset` · `employees` · `updTypes` · `search` · `tsFrom/tsTo` · `before/after(Min/Max)` · `sortBy/sortDir` |
+| `get_logs_count` | GET | العدّ المطابق لنفس الفلاتر |
+| `get_logs_export` | GET | تصدير — سقف `LOG_EXPORT_MAX = 2000` + `{ cap, total, truncated }` |
+| `get_log_values` | GET | قيم التكلفة قبل/بعد المميّزة (قوائم الفلتر) |
+| `get_config` | GET | `{ version }` — حارس نسخة الواجهة |
+| `diag` | GET | فحص ذاتي بدون كتابة: المتغيرات · D1 · OAuth · الصلاحيات · الموقع · `throttleStatus` و`actualQueryCost` (أسماء وأطوال بس، ولا سر) |
 
 ---
 
@@ -118,7 +128,7 @@ LOCATION_ID = "98849620290"               → gid://shopify/Location/${LOCATION_
 
 **قيمة `tool` في D1:** `products_cost_check` ← لازم تطابق `writeLog()` و`WHERE tool = ?` بالظبط
 
-**Shopify API version:** `2026-01` (ثابت `API_VERSION` في `index.js`)
+**Shopify API version:** `2026-10` (ثابت `API_VERSION` في `index.js` — القيمة الرسمية `ecommoda-constants` §1). ⚠️ `Product.featuredImage` مُهمَل على 2026-10 → الأداة بتستخدم `featuredMedia.preview.image`.
 
 ---
 
@@ -148,11 +158,18 @@ LOCATION_ID = "98849620290"               → gid://shopify/Location/${LOCATION_
 - **`cost === 0` = `empty` مش `above`.** شوبيفاي بيرجّع `unitCost.amount = "0.00"` كقيمة
   رقمية حقيقية مش `null`. من غير الاستثناء ده الشرط `price < 0` مستحيل يتحقق
   والمنتج كان بيختفي من فلتر "تكلفة فاضية" تمامًا. (v2.1.1 — اتأكد بصريًا من شوبيفاي)
-- **حد الـ bulk = 100** (`MAX_BULK_UPDATE`). أكتر من كده بيرجع `400` — الواجهة لازم تقسّم دفعات.
-- **`bulk_update_cost` جزئي بطبعه.** بيرجع `200` مع `results[]` + `updatedCount` + `failedCount`
-  حتى لو كله فشل. الواجهة **لازم** تقرا `failedCount` — `ok: true` مش معناها نجاح.
-- **الحد الأقصى للسجل 2000** (v2.5.0). الأداة بتجيب دفعة واحدة وتفلتر client-side.
-  الكاب القديم (100) كان بيقطع الطلب حتى لو الـ HTML طلب 2000.
+- **سلسلة السقوف:** الواجهة `CHUNK = 20` (وقت) ← الـ Worker `MAX_BULK_UPDATE = 100` (حارس لصق، أكتر منه `400`) ← صفحات شوبيفاي 250/صفحة (`MAX_VARIANT_PAGES = 400` = فشل صريح مش قايمة ناقصة). مصدر الحالة «مخزون > 0» **متراكم** مع الكتالوج.
+- **`bulk_update_cost` جزئي بطبعه.** بيرجع `200` مع `results[]` (بنفس ترتيب `updates` — الواجهة بتطابق بالفهرس)
+  + `updatedCount` + `failedCount` + `alreadyCount` + `loggedFailedCount`. `ok: true` معناها «الطلب اتعالج» —
+  النتيجة الفعلية في `results[].status`: `success` (شوبيفاي رجّعت نفس التكلفة المطلوبة) · `error` (اتبعتت واترفضت) ·
+  `rejected` (اتوقفت قبل أي نداء: بيانات ناقصة/قيمة غلط/تكرار في الدفعة) · `already` (التكلفة هي هي — مفيش حاجة كانت مطلوبة، **مش فشل**).
+- **لوج صف واحد لكل عنصر:** `cost_update` (`extra.result` = success/error، `stage: write`) أو `cost_update_rejected` (rejected/already، `stage: preflight`).
+  أي استعلام خط أساس لازم يفلتر على `json_extract(extra,'$.result') = 'success'` — `type` لوحده بيقيس المحاولات.
+- **سجل العمليات server-side بالكامل** (v2.6.0): فلاتر + ترتيب + صفحات (100) + عدّ. التصدير سقفه 2000 ويرجّع `truncated` والواجهة بتعرض بانر. الفلتر الزمني بحدود يوم القاهرة (`tsFrom/tsTo` من `cairoDayBoundsUTC`) مش تاريخ UTC.
+- **امتداد السجل برّه الـ SHARED block:** سجل الأداة مفيهوش `order_name` (هويّته SKU + اسم المنتج)، فبحث/فلاتر/ترتيب الأداة في §LOGS-PCC (`pccLogQuery` فوق `buildLogFilterSQL` من غير تعديل عليه).
+- **الخروج:** يدوي فوري بلا تأكيد، وتلقائي بعد 60 د عدم نشاط (Standards #52).
+- **`WORKER_URL` constant في الواجهة** (مش حقل إعدادات) — `WORKER SECRET` وحده في `localStorage` (`pcc_worker_secret`).
+- **`MIN_WORKER_VERSION = '2.6.0'`** في الواجهة (حد أدنى، مش تطابق). أي action/حقل جديد الواجهة بتقراه = ارفعه في نفس التسليم. مالهاش علاقة بـ `TOOL_VERSION`.
 - **`getLogs` بيستبعد `login`/`logout`** — دول بيتسجّلوا بس ومش بيظهروا في السجل.
 - **الأخطاء بالعربي.** رسايل الـ Worker موجّهة للموظف مباشرة — حافظ على ده في أي كود جديد.
 
@@ -167,3 +184,7 @@ LOCATION_ID = "98849620290"               → gid://shopify/Location/${LOCATION_
 | واجهة HTML | `ecommoda-html-builder` |
 | نداء Shopify | `shopify-graphql-helper` |
 | أي عطل | `ecommoda-debugger` |
+
+آخر تحديث: 20-11-2026 — 13:33
+
+</div>
